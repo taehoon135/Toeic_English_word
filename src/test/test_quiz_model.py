@@ -1,14 +1,6 @@
-import os
-import sys
 import unittest
 import pandas as pd
-
-# base_quiz_gen_class.py 찾기
-current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.abspath(os.path.join(current_dir, os.pardir, "quiz generation"))
-sys.path.insert(0, parent_dir)
-
-from base_quiz_gen_class import BaseQuizModel
+from quiz_generation.base_quiz_gen_class import BaseQuizModel
 
 class TestQuizModel(BaseQuizModel):
     def __init__(self, db, APIKEY):

@@ -1,16 +1,10 @@
 import os
-import sys
 import unittest
 import json
 import tempfile
 import shutil
+from user_data_manipulation.user_data import UserData
 
-# user_data.py 찾기
-current_dir = os.path.dirname(os.path.abspath(__file__))
-parent_dir = os.path.abspath(os.path.join(current_dir, os.pardir, "user data manipulation"))
-sys.path.insert(0, parent_dir)
-
-from user_data import UserData
 
 class TestUserData(unittest.TestCase):
     def setUp(self):
