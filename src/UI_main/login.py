@@ -35,7 +35,7 @@ def sign_login(root):
         entry_widget.bind("<FocusOut>", on_focus_out)
 
     # 로그인
-    def login_action(id, password):
+    def login_action(id, password, mode_var):
         #입력이 안된 상태 고려
         if (id.has_placeholder or id.get().strip() == ""):
             messagebox.showwarning("경고", "아이디가 입력되지 않았습니다.")
@@ -43,9 +43,12 @@ def sign_login(root):
         elif (password.has_placeholder or password.get().strip() == ""):
             messagebox.showwarning("경고", "비밀번호가 입력되지 않았습니다.")
             return
+        
+        selected_mode = mode_var.get() #관리자 모드인지 사용자 모드인지 판별함
 
         #if문을 사용해서 데이터베이스에 있는 파일과 비교 후 아이디가 일치하면
         #main_menu 함수 호출
+        print(selected_mode)
         print("test")
         
     #회원가입 화면으로 이동
@@ -79,17 +82,25 @@ def sign_login(root):
         button_frame.pack(pady=15)
 
         # 로그인 버튼
-        login_button = ttk.Button(button_frame, text="로그인", bootstyle="success", command=lambda: login_action(id_entry, password_entry))
+        login_button = ttk.Button(button_frame, text="로그인", bootstyle="success", command=lambda: login_action(id_entry, password_entry, mode_var))
         login_button.pack(pady=5, fill=X)
 
         # 회원가입 버튼
         signup_button = ttk.Button(button_frame, text="회원가입", bootstyle="info", command=signup_action)
         signup_button.pack(pady=5, fill=X)
 
+        #관리자 모드 토글
+        mode_var = tk.StringVar()
+        modes = ["사용자 모드", "관리자 모드"]
+        mode_menu = ttk.OptionMenu(root, mode_var, modes[0], *modes)
+        mode_menu.pack(pady=10)
+
         # 종료 버튼 (하단 중앙 정렬)
         exit_button = ttk.Button(root, text="종료", bootstyle="danger", command=root.quit)
         exit_button.pack(side=BOTTOM, pady=15)
 
     switch_to_login()
+
+
 
 
