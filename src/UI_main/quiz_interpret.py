@@ -5,6 +5,7 @@ from ttkbootstrap.constants import *
 
 def quiz_interpret(root1):
     from quiz_result import quiz_result
+    from quiz_four_choice import quiz_four_choice
 
     #이런 배열을 데베에서 받았다고 가정
     word_list = [
@@ -14,13 +15,15 @@ def quiz_interpret(root1):
         ["mission", "임무", 0, "전체"],
         ["hot", "뜨거운", 2, "카테고리2"]
     ]
-    word_list_anwser = [0 for i in range(len(word_list))]
-
+    word_list_anwser = [0 for i in range(len(word_list))]  #정답 여부 저장
 
     def enter(entered_text):
         nonlocal current_index
 
-        if (entered_text == word_list[current_index][1]):
+        # if entered_text == None:
+        #     entered_text = ""
+
+        if (entered_text == word_list[current_index][0]):
             word_list_anwser[current_index] = 1
         else:
             word_list_anwser[current_index] = 0
@@ -39,7 +42,7 @@ def quiz_interpret(root1):
             messagebox.showinfo("", "모든 단어를 완료했습니다!")
             quiz_result(root1, word_list, word_list_anwser)
         else:
-            word_label.config(text= word_list[current_index][0], font=("Arial", 25))
+            word_label.config(text= word_list[current_index][1], font=("Arial", 25))
             count_word.config(text=f"남은 단어 갯수: {len(word_list) - current_index}", font=("나눔 고딕", 16))
             answer.delete(0, tk.END)
 
@@ -52,13 +55,13 @@ def quiz_interpret(root1):
         widget.destroy()  
 
     tk.Label(root1, text="정답을 입력하세요", font=("나눔 고딕", 16)).pack(pady=20)
-    word_label = tk.Label(root1, text= word_list[current_index][0], font=("Arial", 25))
+    word_label = tk.Label(root1, text= word_list[current_index][1], font=("Arial", 25))
     word_label.pack(pady=20)
 
     answer = tk.Entry(root1)
     answer.place(relx=0.5, rely=0.5, anchor="center", width=200, height=25)
 
-    submit_button = tk.Button(root1, text="입력", command= enter)
+    submit_button = tk.Button(root1, text="입력", command=lambda: enter(answer.get()))
     submit_button.place(relx=0.8, rely=0.5, anchor="e", width=40)
 
     #엔터키로도 입력 가능
