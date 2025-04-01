@@ -2,6 +2,7 @@ import tkinter as tk
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 from tkinter import messagebox
+from menu import main_menu
 
 def sign_login(root):
     from create_account import register
@@ -35,7 +36,7 @@ def sign_login(root):
         entry_widget.bind("<FocusOut>", on_focus_out)
 
     # 로그인
-    def login_action(id, password, mode_var):
+    def login_action(id, password, mode_var, root):
         #입력이 안된 상태 고려
         if (id.has_placeholder or id.get().strip() == ""):
             messagebox.showwarning("경고", "아이디가 입력되지 않았습니다.")
@@ -46,10 +47,11 @@ def sign_login(root):
         
         selected_mode = mode_var.get() #관리자 모드인지 사용자 모드인지 판별함
 
-        #if문을 사용해서 데이터베이스에 있는 파일과 비교 후 아이디가 일치하면
-        #main_menu 함수 호출
-        print(selected_mode)
-        print("test")
+        if verify_user(id.get(), password.get(), selected_mode):
+            messagebox.showinfo("성공", "로그인 성공!")
+            main_menu(root)  # root를 main_menu 함수에 전달
+        else:
+            messagebox.showerror("오류", "ID 또는 비밀번호가 잘못되었습니다.")
         
     #회원가입 화면으로 이동
     def signup_action():
@@ -74,15 +76,15 @@ def sign_login(root):
         set_placeholder(password_entry, "Password", is_password=True)  # 비밀번호 플레이스홀더 적용
 
         #엔터키로 입력
-        id_entry.bind("<Return>", lambda event: login_action(id_entry, password_entry))
-        password_entry.bind("<Return>", lambda event: login_action(id_entry, password_entry))
+        id_entry.bind("<Return>", lambda event: login_action(id_entry, password_entry, mode_var, root))
+        password_entry.bind("<Return>", lambda event: login_action(id_entry, password_entry, mode_var, root))
 
         # 버튼 컨테이너 프레임 (로그인 & 회원가입)
         button_frame = ttk.Frame(root)
         button_frame.pack(pady=15)
 
         # 로그인 버튼
-        login_button = ttk.Button(button_frame, text="로그인", bootstyle="success", command=lambda: login_action(id_entry, password_entry, mode_var))
+        login_button = ttk.Button(button_frame, text="로그인", bootstyle="success", command=lambda: login_action(id_entry, password_entry, mode_var, root)) #root를 람다함수에 넘겨줌
         login_button.pack(pady=5, fill=X)
 
         # 회원가입 버튼
@@ -95,12 +97,21 @@ def sign_login(root):
         mode_menu = ttk.OptionMenu(root, mode_var, modes[0], *modes)
         mode_menu.pack(pady=10)
 
+        mode_menu.bind("<Return>", lambda event: login_action(id_entry, password_entry, mode_var, root)) #엔터키로 입력
+
         # 종료 버튼 (하단 중앙 정렬)
         exit_button = ttk.Button(root, text="종료", bootstyle="danger", command=root.quit)
         exit_button.pack(side=BOTTOM, pady=15)
 
     switch_to_login()
 
+    #데이터베이스 연결 검증함수 예시
+def verify_user(id, password, mode):
+    #실제 환경에선 데이터베이스 연결을 통해 user의 정보와 입력받은 id, password, mode를 비교해야함
+    if id == "123" and password == "123":
+        return True
+    else:
+        return False
 
 
 
