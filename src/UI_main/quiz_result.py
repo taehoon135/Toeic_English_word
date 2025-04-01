@@ -16,7 +16,7 @@ def quiz_result(root, word_list, word_list_answer):
 
     # 결과 프레임 (스크롤 포함)
     result_frame = tk.Frame(root, bg="white", relief="solid", bd=1)
-    result_frame.place(x=20, y=20, width=500, height=500)
+    result_frame.place(x=20, y=20, width=550, height=500)
 
     canvas = tk.Canvas(result_frame, bg="white")
     scrollbar = ttk.Scrollbar(result_frame, orient="vertical", command=canvas.yview)
@@ -36,23 +36,29 @@ def quiz_result(root, word_list, word_list_answer):
     # 마우스 휠 스크롤 이벤트 바인딩
     root.bind("<MouseWheel>", on_mouse_wheel)
 
+
+    #카테고리 선택값을 저장할 리스트
+    category_vars = []
+
     def go_to_main_menu():
+        #선택된 카테고리 별로 단어들을 저장함
+        for i, (word, meaning, mistakes, category) in enumerate(word_list):
+             print(word + "의 카테고리: " + category_vars[i].get())
+
         root.quit()
-        #main_menu()
+        #main_menu(root)
 
     # 카테고리 리스트를 데이터베이스에서 받았다고 가정
     categories = ["전체", "카테고리2", "카테고리3", "카테고리4"]
 
     # 단어 리스트 출력
     for i, (word, meaning, mistakes, category) in enumerate(word_list):
-        # 카테고리 (OptionMenu)
-        #if (category not in categories):
-        #   category = categories[0]
 
         category_var = tk.StringVar()
-        category_var.set(category)  # 기본 선택값을 명시적으로 설정
+        category_var.set(categories[0])  # 기본 선택값을 명시적으로 설정
+        category_vars.append(category_var)
 
-        category_menu = ttk.OptionMenu(scrollable_frame, category_var, category, *categories)
+        category_menu = ttk.OptionMenu(scrollable_frame, category_var, categories[0], *categories)
         category_menu.grid(row=i, column=0, padx=12, pady=5)
         
         # 단어 (조금 오른쪽으로 이동)
@@ -74,4 +80,4 @@ def quiz_result(root, word_list, word_list_answer):
 
     # 종료 버튼
     exit_btn = ttk.Button(root, text="메인 메뉴", bootstyle="success", command=go_to_main_menu)
-    exit_btn.place(x=440, y=540)
+    exit_btn.place(x=480, y=540)
