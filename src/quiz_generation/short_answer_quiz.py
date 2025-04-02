@@ -67,7 +67,8 @@ class ShortAnswerKEQuizModel(BaseQuizModel):
         ratio = 0.3
         for word, meaning in zip(self.words, self.meanings):
             question = f"다음 의미를 가지는 단어는 무엇인가요: {meaning}"
-            self.pairs.append((question, word, word[:max(int(len(word) * ratio), 1)]))
+            length = max(int(len(word) * ratio), 1)
+            self.pairs.append((question, word, word[:length] + '_' * (len(word) - length)))
 
     def get(self) -> List[Tuple[str, str, str]]:
         return self.pairs

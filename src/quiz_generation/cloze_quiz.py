@@ -1,6 +1,8 @@
 from quiz_generation.base_quiz_gen_class import BaseQuizModel
 from typing import Tuple, List
 from LLM.LLMResponse import get_response
+from googletrans import Translator
+import asyncio
 
 
 PROMPT_BASE = "주어진 단어에 대하여, 영어로 쓰인, 한국인 사용자가 풀 수 있는 빈칸 퀴즈를 만들어줘."\
@@ -39,10 +41,12 @@ class ClozeQuizModel(BaseQuizModel):
         
         # Parse the response to get question-answer pairs
         qa_pairs = self.__parse_llm_response(response)
-        
+        translated_questions = self.__translate_examples([i[0] for i in qa_pairs])
+
         # Create quiz pairs
-        for question, answer in qa_pairs:
-            self.pairs.append((question, answer, "hint"))
+        for (question, answer), translated_question in zip(qa_pairs, translated_questions):
+
+            self.pairs.append((question, answer, translated_question))
 
     def get(self) -> List[Tuple[str, str, str]]:
         return self.pairs
@@ -86,4 +90,11 @@ class ClozeQuizModel(BaseQuizModel):
             if line.startswith("Q:") and ";A:" in line:
                 q, a = line.split(';A:')
                 qa_pairs.append((q.replace('Q:', '').strip(), a.strip()))
-        return qa_pairs 
+        return qa_pairs
+    
+    def __translate_examples(self, examples: List[str]) -> List[str]:
+        translator = Translator()
+        result = translator.translate(examples, src="en", dest="ko")
+
+        result = asyncio.get_event_loop().run_until_complete(result) 
+        return [i.text for i in result]

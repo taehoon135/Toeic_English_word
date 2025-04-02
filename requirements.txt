@@ -1,2 +1,3 @@
 google-genai
-pandas
+jamo
+googletrans
