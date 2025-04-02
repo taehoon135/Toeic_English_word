@@ -2,20 +2,21 @@ from quiz_generation.base_quiz_gen_class import BaseQuizModel
 from typing import Tuple, List
 import random
 
-# Global variables for database columns
-WORD_COL = "word"
-MEANING_COL = "meaning"
 
 class FourChoiceQuizModel(BaseQuizModel):
     def __init__(self, db):
         super().__init__(db)
         self.pairs = []
         self.current_index = 0
+        self.words = []
+        self.meanings = []
         self._parse_db(db)
     
     def _parse_db(self, db):
-        self.words = db[WORD_COL].tolist()
-        self.meanings = db[MEANING_COL].tolist()
+        for word in db:
+            word_id, english, meaning, pos, example = word
+            self.words.append(english)
+            self.meanings.append(meaning)
         self._create_pairs()
 
     def _create_pairs(self):

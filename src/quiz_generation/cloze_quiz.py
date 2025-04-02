@@ -2,9 +2,7 @@ from quiz_generation.base_quiz_gen_class import BaseQuizModel
 from typing import Tuple, List
 from LLM.LLMResponse import get_response
 
-# Global variables for database columns
-WORD_COL = "word"
-MEANING_COL = "meaning"
+
 PROMPT_BASE = "주어진 단어에 대하여, 영어로 쓰인, 한국인 사용자가 풀 수 있는 빈칸 퀴즈를 만들어줘."\
                 "각 단어 당 하나의 문제를 만들어줘."\
                 "퀴즈 페어를 제외하고는 아무것도 출력하지 마."\
@@ -21,11 +19,15 @@ class ClozeQuizModel(BaseQuizModel):
         self.current_index = 0
         self.APIKEY = APIKEY
         self.db = db
+        self.words = []
+        self.meanings = []
         self._parse_db(db)
     
     def _parse_db(self, db):
-        self.words = db[WORD_COL].tolist()
-        self.meanings = db[MEANING_COL].tolist()
+        for word in db:
+            word_id, english, meaning, pos, example = word
+            self.words.append(english)
+            self.meanings.append(meaning)
         self._create_pairs()
 
     def _create_pairs(self):
