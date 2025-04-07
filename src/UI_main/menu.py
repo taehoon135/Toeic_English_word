@@ -10,14 +10,11 @@ def main_menu(root):
 
     def open_vocab():
         vocab_window(root)
-        print("")
 
     def open_quiz():
-        print("")
         quiz_menu(root)
 
     def open_settings():
-        print("")
         settings_window(root)
 
 

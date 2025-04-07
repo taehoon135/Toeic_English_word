@@ -21,5 +21,3 @@ sign_login(root)
 
 # 메인 루프 실행
 root.mainloop()
-
-#test
