@@ -50,6 +50,7 @@ def vocab_window(root):
     # exit_button = ttk.Button(root, text="닫기", bootstyle="danger", command=go_to_menu)
     # exit_button.pack(pady=20)
 from tkinter import ttk, font
+#ttest
 
 #단어 데이터
 # words = [
