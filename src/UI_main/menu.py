@@ -1,22 +1,20 @@
 import tkinter as tk
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
-#from quiz_menu import quiz_menu
-#from vocab import vocab_window
 
 def main_menu(root):
     from settings import settings_window
+    from quiz_menu import quiz_menu
+    from vocab import vocab_window
+
 
     def open_vocab():
-    #vocab_window(root)
-        print("")
+        vocab_window(root)
 
     def open_quiz():
-        print("")
-        #quiz_menu(root)
+        quiz_menu(root)
 
     def open_settings():
-        print("")
         settings_window(root)
 
 

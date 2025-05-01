@@ -4,27 +4,24 @@ from ttkbootstrap.constants import *
 from PIL import Image, ImageTk
 from tkinter import Tk, Frame
 
-# 현재 테마 상태 변수
-current_theme = "flatly"  # 기본 테마 (라이트 모드)
-
-# 메인 윈도우 생성
-root = ttk.Window(themename=current_theme)  # ttkbootstrap 사용
-root.title("영단어 학습 프로그램")
-root.geometry("400x600")  #320 450
-root.resizable(False, False)
-
-# 스타일 설정
-style = ttk.Style()
-style.configure("Placeholder.TEntry", foreground="gray")
-style.configure("Normal.TEntry", foreground="black")
-
-def quiz_menu():
+def quiz_menu(root):
     from quiz_interpret import quiz_interpret
     from quiz_four_choice import quiz_four_choice
+    from menu import main_menu
+
+    for widget in root.winfo_children():  # 기존 UI 제거
+        widget.destroy()
+
+    root.title("퀴즈 메뉴")
+    root.geometry("400x600")
+
+    # 스타일 설정
+    style = ttk.Style()
+    style.configure("Placeholder.TEntry", foreground="gray")
+    style.configure("Normal.TEntry", foreground="black")
 
     def go_to_menu():
-        root.quit()
-        #menu() 메뉴화면으로 이동하면서 현재 root는 종료
+        main_menu(root)
 
     # 홈 버튼 (오른쪽 상단)
     home_button = ttk.Button(root, text="🏠 홈", bootstyle="secondary", command=go_to_menu)
@@ -43,10 +40,10 @@ def quiz_menu():
     modes = ["해석 맞추기", "해석 맞추기", "사지선다형 단어 맞추기", "산성비 게임", "문장 채우기 게임"]
 
     #이미지 불러오기
-    image1 = Image.open("z.exampleForGame1.jpg")  # 불러올 이미지 경로
-    image2 = Image.open("z.exampleForGame2.jpg")
-    image3 = Image.open("z.exampleForGame3.jpg")
-    image4 = Image.open("z.exampleForGame4.jpg")
+    image1 = Image.open("C:\\github\\sw-egineering\\src\\UI_main\\z.exampleForGame1.jpg")  # 불러올 이미지 경로 (임의로 자기 경로에 맞게 설정해야 함)
+    image2 = Image.open("C:\\github\\sw-egineering\\src\\UI_main\\z.exampleForGame2.jpg")
+    image3 = Image.open("C:\\github\\sw-egineering\\src\\UI_main\\z.exampleForGame3.jpg")
+    image4 = Image.open("C:\\github\\sw-egineering\\src\\UI_main\\z.exampleForGame4.jpg")
     image1 = image1.resize((350, 300)) 
     image2 = image2.resize((350, 300)) 
     image3 = image3.resize((350, 300)) 
@@ -125,9 +122,3 @@ def quiz_menu():
     start_button = ttk.Button(root, text="시작", bootstyle="success", command=start_button_clicked)
     start_button.pack(pady=20, padx=150, fill="x")
     #root.bind("<Return>", lambda event: start_button_clicked()) #엔터키로 동작 가능
-
-
-quiz_menu()
-
-# Tkinter 이벤트 루프 실행
-root.mainloop()
