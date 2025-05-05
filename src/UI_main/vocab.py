@@ -6,6 +6,7 @@ from tkinter import PhotoImage
 
 def vocab_window(root):
     from menu import main_menu
+    from category_manage import category_manage
 
     for widget in root.winfo_children():  # 기존 UI 제거
         widget.destroy()
@@ -94,8 +95,8 @@ def vocab_window(root):
     
         print(data[1])
 
-    def category_manage():
-        print("실행")
+    def go_to_category_manage():
+        category_manage(root)
 
     # GUI 시작
     root.title("단어장")
@@ -141,7 +142,7 @@ def vocab_window(root):
     search_row2 = ttk.Frame(search_frame)
     search_row2.pack(fill=tk.X)
 
-    category_button = ttk.Button(search_row2, text="카테고리 관리", command=category_manage, style="Big.TButton")
+    category_button = ttk.Button(search_row2, text="카테고리 관리", command=go_to_category_manage, style="Big.TButton")
     category_button.pack(side=tk.RIGHT, padx=5, pady=5)
 
     # 단어 테이블

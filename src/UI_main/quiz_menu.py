@@ -34,7 +34,7 @@ def quiz_menu(root):
     button_frame.pack(fill="x", pady=10, padx=10)
 
     # 랭킹 버튼 (왼쪽 상단)
-    rank_button = ttk.Button(button_frame, text="랭크", bootstyle="secondary", command=go_to_ranking)
+    rank_button = ttk.Button(button_frame, text="랭킹", bootstyle="secondary", command=go_to_ranking)
     rank_button.pack(side="left")
 
     # 홈 버튼 (오른쪽 상단)

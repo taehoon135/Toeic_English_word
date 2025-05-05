@@ -4,7 +4,7 @@ from ttkbootstrap.constants import *
 
 def ranking(root):
     # 메인 메뉴 함수 import
-    from menu import main_menu
+    from quiz_menu import quiz_menu
 
     # 기존 창의 모든 위젯 제거 (화면 초기화)
     for widget in root.winfo_children():
@@ -14,8 +14,8 @@ def ranking(root):
     root.geometry("500x600")
 
     # '메인 메뉴' 버튼 클릭 시 실행되는 함수
-    def go_to_main_menu():
-        main_menu(root)
+    def go_to_quiz_menu():
+        quiz_menu(root)
 
     user_info = ["3", "john", "300"]
     user_rank = [["1", "pohn", "990"], ["2", "kim", "800"], ["3", "john", "300"], ["4", "miss", "10"]]
@@ -30,7 +30,7 @@ def ranking(root):
     rank_label.pack(anchor="w")
 
     # '메인 메뉴' 버튼 생성 및 배치
-    exit_btn = ttk.Button(root, text="메인 메뉴", bootstyle="success", command=go_to_main_menu)
+    exit_btn = ttk.Button(root, text="뒤로가기", bootstyle="success", command=go_to_quiz_menu)
     exit_btn.pack(anchor="e", padx=10, pady=10)
 
     # 결과를 표시할 프레임 생성 및 배치
