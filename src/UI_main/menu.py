@@ -39,9 +39,4 @@ def main_menu(root):
     exit_button = ttk.Button(root, text="종료", bootstyle="danger", command=root.quit)
     exit_button.pack(pady=20)
 
-# if __name__ == "__main__":
-#     root = tk.Tk()
-#     main_menu(root)
-#     root.mainloop()
-
 

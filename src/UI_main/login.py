@@ -37,6 +37,9 @@ def sign_login(root):
 
     # 로그인
     def login_action(id, password, mode_var, root):
+        #임시
+        main_menu(root)
+
         #입력이 안된 상태 고려
         if (id.has_placeholder or id.get().strip() == ""):
             messagebox.showwarning("경고", "아이디가 입력되지 않았습니다.")

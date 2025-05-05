@@ -5,7 +5,6 @@ from ttkbootstrap.constants import *
 
 def quiz_interpret(root1):
     from quiz_result import quiz_result
-    from quiz_four_choice import quiz_four_choice
 
     #이런 배열을 데베에서 받았다고 가정
     word_list = [
@@ -45,9 +44,18 @@ def quiz_interpret(root1):
             word_label.config(text= word_list[current_index][1], font=("Arial", 25))
             count_word.config(text=f"남은 단어 갯수: {len(word_list) - current_index}", font=("나눔 고딕", 16))
             answer.delete(0, tk.END)
+            hint_label.grid_forget()  # 다음 단어로 넘어갈 때 힌트 숨기기
+
+    def show_hint():
+        nonlocal current_index
+        hint_label.config(text=hint[current_index])
+        hint_label.grid(row=0, column=1)  # 버튼 오른쪽에 표시
 
 
-    current_index = 0
+    current_index = 0 #현재 문제 번호
+    hint = [] #번호 별 힌트
+    #예시
+    hint = ["힌트1", "힌트2", "힌트3", "힌트4", "힌트5"]
 
     #프레임 초기화와 크기 조정
     root1.geometry("500x400")
@@ -66,6 +74,14 @@ def quiz_interpret(root1):
 
     #엔터키로도 입력 가능
     answer.bind("<Return>", lambda event: enter(answer.get()))
+
+    #힌트 버튼 프레임
+    hint_frame = tk.Frame(root1)
+    hint_frame.place(relx=0.15, rely=0.7)  # 입력 아래 왼쪽 (조절 가능)
+
+    hint_button = tk.Button(hint_frame, text="힌트", command=show_hint, width=5, height=2)
+    hint_button.grid(row=0, column=0, padx=(0, 10))  # 왼쪽
+    hint_label = tk.Label(hint_frame, text=hint[current_index], font=("나눔 고딕", 14), foreground="gray")
 
     count_word = tk.Label(root1, text=f"남은 단어 갯수: {len(word_list) - current_index}", font=("나눔 고딕", 16))
     count_word.pack(side="bottom", pady=10)

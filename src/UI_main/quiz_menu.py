@@ -7,7 +7,11 @@ from tkinter import Tk, Frame
 def quiz_menu(root):
     from quiz_interpret import quiz_interpret
     from quiz_four_choice import quiz_four_choice
+    from quiz_word import quiz_word1
+    from quiz_sentence import quiz_sentence
+    from quiz_rain import AcidRainGame
     from menu import main_menu
+    from ranking import ranking
 
     for widget in root.winfo_children():  # 기존 UI 제거
         widget.destroy()
@@ -22,10 +26,20 @@ def quiz_menu(root):
 
     def go_to_menu():
         main_menu(root)
+    
+    def go_to_ranking():
+        ranking(root)
+
+    button_frame = ttk.Frame(root)
+    button_frame.pack(fill="x", pady=10, padx=10)
+
+    # 랭킹 버튼 (왼쪽 상단)
+    rank_button = ttk.Button(button_frame, text="랭크", bootstyle="secondary", command=go_to_ranking)
+    rank_button.pack(side="left")
 
     # 홈 버튼 (오른쪽 상단)
-    home_button = ttk.Button(root, text="🏠 홈", bootstyle="secondary", command=go_to_menu)
-    home_button.pack(anchor="ne", padx=10, pady=10)
+    home_button = ttk.Button(button_frame, text="🏠 홈", bootstyle="secondary", command=go_to_menu)
+    home_button.pack(side="right")
 
     # 옵션 선택 (OptionMenu)
     option_var = tk.StringVar(value="Category 1")
@@ -37,22 +51,25 @@ def quiz_menu(root):
 
     # 모드 선택 (OptionMenu)
     mode_var = tk.StringVar(value="Select Mode")
-    modes = ["해석 맞추기", "해석 맞추기", "사지선다형 단어 맞추기", "산성비 게임", "문장 채우기 게임"]
+    modes = ["해석 맞추기", "해석 맞추기", "단어 맞추기", "사지선다형 단어 맞추기", "문장 채우기 게임", "산성비 게임"]
 
     #이미지 불러오기
     image1 = Image.open("C:\\github\\sw-egineering\\src\\UI_main\\z.exampleForGame1.jpg")  # 불러올 이미지 경로 (임의로 자기 경로에 맞게 설정해야 함)
+    image1_5 = Image.open("C:\\github\\sw-egineering\\src\\UI_main\\z.exampleForGame1_5.jpg")
     image2 = Image.open("C:\\github\\sw-egineering\\src\\UI_main\\z.exampleForGame2.jpg")
     image3 = Image.open("C:\\github\\sw-egineering\\src\\UI_main\\z.exampleForGame3.jpg")
     image4 = Image.open("C:\\github\\sw-egineering\\src\\UI_main\\z.exampleForGame4.jpg")
-    image1 = image1.resize((350, 300)) 
+    image1 = image1.resize((350, 300))
+    image1_5 = image1_5.resize((350, 300))
     image2 = image2.resize((350, 300)) 
     image3 = image3.resize((350, 300)) 
     image4 = image4.resize((350, 300)) 
     photo1 = ImageTk.PhotoImage(image1)  #tk에서 사용할 수 있게 변환
+    photo1_5 = ImageTk.PhotoImage(image1_5)
     photo2 = ImageTk.PhotoImage(image2)
     photo3 = ImageTk.PhotoImage(image3)
     photo4 = ImageTk.PhotoImage(image4)
-    mode_explain = [photo1, photo2, photo3, photo4]
+    mode_explain = [photo1, photo1_5, photo2, photo3, photo4]
 
     # 모드 변경 시 그 모드에 대한 예시를 이미지로 출력
     def handle_mode_change(selected_mode):
@@ -91,14 +108,17 @@ def quiz_menu(root):
     def mode_1_function():
         quiz_interpret(root)
 
+    def mode_1_5_function():
+        quiz_word1(root)
+
     def mode_2_function():
         quiz_four_choice(root)
 
     def mode_3_function():
-        print("Mode 3 실행 중...")
+        quiz_sentence(root)
 
     def mode_4_function():
-        print("Mode 4 실행 중...")
+        game = AcidRainGame(root)
 
     # Start 버튼 클릭 시 실행될 함수
     def start_button_clicked():
@@ -109,11 +129,13 @@ def quiz_menu(root):
 
         if selected_mode == "해석 맞추기":
             mode_1_function()
+        elif selected_mode == "단어 맞추기":
+            mode_1_5_function()
         elif selected_mode == "사지선다형 단어 맞추기":
             mode_2_function()
-        elif selected_mode == "산성비 게임":
-            mode_3_function()
         elif selected_mode == "문장 채우기 게임":
+            mode_3_function()
+        elif selected_mode == "산성비 게임":
             mode_4_function()
         else:
             print("올바른 모드를 선택해주세요.")
