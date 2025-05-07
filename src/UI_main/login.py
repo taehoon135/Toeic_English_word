@@ -7,6 +7,14 @@ from menu import main_menu
 def sign_login(root):
     from create_account import register
 
+    #DB연결
+    import os
+    import sys
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  #나보다 위 디렉토리에 있음
+    from database.user_db import UserDB
+
+    user_db = UserDB() #클래스 생성
+
     # Placeholder 설정 함수 (비밀번호 입력 포함)
     def set_placeholder(entry_widget, placeholder_text, is_password=False):
         """입력 필드에 플레이스홀더를 설정 (비밀번호 필드 대응)"""
@@ -37,8 +45,6 @@ def sign_login(root):
 
     # 로그인
     def login_action(id, password, mode_var, root):
-        #임시
-        main_menu(root)
 
         #입력이 안된 상태 고려
         if (id.has_placeholder or id.get().strip() == ""):
@@ -50,11 +56,23 @@ def sign_login(root):
         
         selected_mode = mode_var.get() #관리자 모드인지 사용자 모드인지 판별함
 
-        if verify_user(id.get(), password.get(), selected_mode):
-            messagebox.showinfo("성공", "로그인 성공!")
-            main_menu(root)  # root를 main_menu 함수에 전달
+        if (selected_mode == "사용자 모드"):
+            print(user_db.login_user(id.get(), password.get()))
+            main_menu(root) #임시
+
+            if (user_db.login_user(id.get(), password.get()) != None): #리턴값에 대한 설명 필요
+                messagebox.showinfo("성공", "로그인 성공!")
+                main_menu(root)  # root를 main_menu 함수에 전달
+            else:
+                messagebox.showerror("오류", "ID 또는 비밀번호가 잘못되었습니다.")
+
+        elif (selected_mode == "관리자 모드"):
+            if (1):
+                print("관리자 모드에 관련된 함수 실행")
+            else:
+                messagebox.showerror("오류", "관리자 ID 또는 비밀번호가 잘못되었습니다.")
         else:
-            messagebox.showerror("오류", "ID 또는 비밀번호가 잘못되었습니다.")
+            print("오류 발생 -> 일어나선 안되는 구문)")
         
     #회원가입 화면으로 이동
     def signup_action():
@@ -107,14 +125,6 @@ def sign_login(root):
         exit_button.pack(side=BOTTOM, pady=15)
 
     switch_to_login()
-
-    #데이터베이스 연결 검증함수 예시
-def verify_user(id, password, mode):
-    #실제 환경에선 데이터베이스 연결을 통해 user의 정보와 입력받은 id, password, mode를 비교해야함
-    if id == "123" and password == "123":
-        return True
-    else:
-        return False
 
 
 

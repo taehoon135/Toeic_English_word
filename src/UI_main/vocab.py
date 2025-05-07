@@ -28,7 +28,11 @@ def vocab_window(root):
     #DB연결
     import os
     import sys
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))  #나보다 위 디렉토리에 있음
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  #나보다 위 디렉토리에 있음
+    from database.word_db import WordDB
+
+    word_db = WordDB() #데베 클래스 생성
+    print(word_db.get_all_words())
 
     # 단어 테이블 업데이트
     def update_word_table():
