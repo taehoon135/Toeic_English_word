@@ -43,6 +43,10 @@ def category_manage(root):
         
     #카테고리 내의 단어 삭제
     def delete_word_in_category():
+        #카테고리 데이터
+        selected = category_table.focus()
+        data = category_table.item(selected, "values")
+        #카테고리에 속한 단어 데이터
         selected_word = word_table.focus()
         data_word = word_table.item(selected_word, "values")
 
@@ -52,7 +56,7 @@ def category_manage(root):
         
         confirm = messagebox.askyesno("단어 삭제", "정말로 삭제하시겠습니까?")
         if confirm:
-            print(data_word[0] + " 카테고리의 단어 삭제")
+            print(data[0] + " 카테고리의 " + data_word[0] + " 단어 삭제")
             update_word_table() #카테고리 목록 초기화
             #선택된 트리뷰 초기화
             nonlocal last_selected_tree
