@@ -19,40 +19,82 @@ def category_manage(root):
     def go_to_make_category():
         category_make(root)
 
+    #마지막으로 선택된 트리뷰 구분
+    last_selected_tree = None
+
     #카테고리 삭제
     def delete_category():
         selected = category_table.focus()
         data = category_table.item(selected, "values")
 
-        if not selected:
-            messagebox.showwarning("선택 오류", "삭제할 카테고리를 선택하세요.")
-            return
+        # if not selected:
+        #     messagebox.showwarning("선택 오류", "삭제할 카테고리를 선택하세요.")
+        #     return
         
-        confirm = messagebox.askyesno("삭제", "정말로 삭제하시겠습니까?")
+        confirm = messagebox.askyesno("카테고리 삭제", "정말로 삭제하시겠습니까?")
         if confirm:
             print(data[0] + " 카테고리 삭제")
+            update_word_table() #카테고리 목록 초기화
+            #선택된 트리뷰 초기화
+            nonlocal last_selected_tree
+            last_selected_tree = None
         else:
             return
+        
+    #카테고리 내의 단어 삭제
+    def delete_word_in_category():
+        selected_word = word_table.focus()
+        data_word = word_table.item(selected_word, "values")
 
+        # if not selected_word:
+        #     messagebox.showwarning("선택 오류", "삭제할 단어를 선택하세요.")
+        #     return
+        
+        confirm = messagebox.askyesno("단어 삭제", "정말로 삭제하시겠습니까?")
+        if confirm:
+            print(data_word[0] + " 카테고리의 단어 삭제")
+            update_word_table() #카테고리 목록 초기화
+            #선택된 트리뷰 초기화
+            nonlocal last_selected_tree
+            last_selected_tree = None
+        else:
+            return
+        
+    def category_or_word(category_table, word_table):
+        nonlocal last_selected_tree
+        if (last_selected_tree == None):
+            messagebox.showwarning("선택 오류", "아무것도 선택되지 않음.")
+        elif (last_selected_tree == category_table):
+            delete_category()
+        elif (last_selected_tree == word_table):
+            delete_word_in_category()
+        
     #예시
     category_word = [
         ["fruit", 3,"apple", "사과", "banana", "바나나", "blueberry", "블루베리"],
         ["cant_remember", 2, "fight", "싸우다", "tiger", "호랑이"],
         ["language", 1, "english", "영어"]
     ]
-    filtered_words = category_word.copy() #용도 모름
 
     # 단어 테이블 업데이트
     def update_word_table():
         for row in category_table.get_children(): #기존 카테고리 목록 삭제
             category_table.delete(row)
-        for item in filtered_words:
-            category_table.insert("", "end", values=(item[0], item[1])) #새로 다시 업데이트
+        for item in category_word:
+            category_table.insert("", "end", values=(item[0], item[1])) #카테고리 새로 다시 업데이트
+        for row2 in word_table.get_children():
+            word_table.delete(row2)
 
+    #treeview를 클릭했을때의 처리
     def on_row_click(event):
-        selected = category_table.focus()
-        if selected:
-            data = category_table.item(selected, "values")
+        nonlocal last_selected_tree
+        selected_tree = event.widget
+        selected_item = selected_tree.focus()
+        data = selected_tree.item(selected_item, "values")
+
+        #마지막으로 카테고리가 선택된 경우
+        if selected_tree == category_table and selected_item:
+            last_selected_tree = category_table
 
             #data에는 카테고리와 단어 갯수밖에 없으므로 원래 리스트에서 다시 찾기
             for index in range(len(category_word)):
@@ -62,9 +104,14 @@ def category_manage(root):
             #기존 목록 삭제
             for row in word_table.get_children():
                 word_table.delete(row)
+            #카테고리에 소속된 단어 밑 트리뷰에 출력
             for i in range(int(category_word[index][1])):
                 category_index = i * 2
                 word_table.insert("", "end", values=(category_word[index][category_index+2], category_word[index][category_index+3])) #짝수번째는 영단어, 홀수번째는 뜻
+
+        #마지막으로 카테고리 내의 단어가 선택된 경우
+        elif (selected_tree == word_table and selected_item):
+            last_selected_tree = word_table
 
     # GUI 시작
     root.geometry("500x600")
@@ -129,7 +176,7 @@ def category_manage(root):
     bottom_frame.pack(fill=tk.X, padx=10, pady=10)
 
     #삭제 버튼
-    delete_button = ttk.Button(bottom_frame, text="삭제", style="Big.TButton", command=delete_category)
+    delete_button = ttk.Button(bottom_frame, text="삭제", style="Big.TButton", command=lambda: category_or_word(category_table, word_table))
     delete_button.pack(anchor="e")
 
     # 초기 카테고리 표시
