@@ -2,7 +2,7 @@ from tkinter import ttk
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 
-def ranking(root):
+def ranking(root, user_number):
     # 메인 메뉴 함수 import
     from quiz_menu import quiz_menu
 
@@ -15,7 +15,7 @@ def ranking(root):
 
     # '메인 메뉴' 버튼 클릭 시 실행되는 함수
     def go_to_quiz_menu():
-        quiz_menu(root)
+        quiz_menu(root, user_number)
 
     user_info = ["3", "john", "300"]
     user_rank = [["1", "pohn", "990"], ["2", "kim", "800"], ["3", "john", "300"], ["4", "miss", "10"]]

@@ -7,6 +7,14 @@ def register(root):
     #순환참조 방지
     from login import sign_login
 
+    #DB연결
+    import os
+    import sys
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  #나보다 위 디렉토리에 있음
+    from database.user_db import UserDB
+
+    user_db = UserDB() #클래스 생성
+
     def set_placeholder(entry_widget, placeholder_text, is_password=False):
         """입력 필드에 플레이스홀더를 설정 (비밀번호 필드 대응)"""
         entry_widget.insert(0, placeholder_text)
@@ -56,8 +64,14 @@ def register(root):
             return
 
         #비밀번호가 일치하면 데이터베이스에 항목 추가
-        messagebox.showinfo("성공", "회원가입이 완료되었습니다!")
-        back_to_login()
+        #user_login_id, user_pw, user_name, is_admin=0, user_api=None
+        if (password.get() == comfirm_password.get()):
+            id_num = user_db.register_user(id.get(), password.get(), name.get())
+            print(id_num, id.get(), password.get())
+            messagebox.showinfo("성공", "회원가입이 완료되었습니다!")
+            back_to_login()
+        else:
+            print("문제 발생")
 
     def switch_to_signup():
         """로그인 UI 제거 후 회원가입 UI 표시"""

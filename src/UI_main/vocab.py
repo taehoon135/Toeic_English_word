@@ -4,7 +4,7 @@ from ttkbootstrap.constants import *
 from tkinter import ttk, messagebox, font
 from tkinter import PhotoImage
 
-def vocab_window(root):
+def vocab_window(root, user_number):
     from menu import main_menu
     from category_manage import category_manage
 
@@ -14,16 +14,7 @@ def vocab_window(root):
 
     #뒤로가기
     def go_to_menu():
-        main_menu(root)
-
-    #단어 데이터
-    words = [
-        {"id": 1, "word": "apple", "meaning": "사과", "pos": "명사", "example": "I ate an apple.", "category": "과일", "wrong_count": 0},
-        {"id": 2, "word": "run", "meaning": "달리다", "pos": "동사", "example": "She runs fast.", "category": "동작", "wrong_count": 2},
-        {"id": 3, "word": "blue", "meaning": "파란", "pos": "형용사", "example": "The sky is blue.", "category": "색상", "wrong_count": 1},
-        {"id": 4, "word": "dog", "meaning": "개", "pos": "명사", "example": "Dogs are friendly.", "category": "동물", "wrong_count": 3},
-    ]
-    filtered_words = words.copy()
+        main_menu(root, user_number)
 
     #DB연결
     import os
@@ -31,26 +22,43 @@ def vocab_window(root):
     sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  #나보다 위 디렉토리에 있음
     from database.word_db import WordDB
 
+    # 단어 추가 -> 테스트를 위해 임의로 생성
     word_db = WordDB() #데베 클래스 생성
-    print(word_db.get_all_words())
+    word_db.add_word('apple','사과', '명사', 'I ate an apple', 0)
+    word_db.add_word('run','달리다', '동사', 'she runs fast', 0)
+    word_db.add_word('blue', '파란', '형용사' , 'The sky is blue', 0)
+
+    words = word_db.get_all_words()
+    # print(word_db.get_all_words())
+
+    # 카테고리 임의 생성
+    word_db.add_category("test1")
+    word_db.add_category("test2")
+    word_db.add_category("test3")
+    # print(word_db.get_categories())
+
+    filtered_words = words.copy()
 
     # 단어 테이블 업데이트
     def update_word_table():
         for row in word_table.get_children():
             word_table.delete(row)
-        for item in filtered_words:
-            word_table.insert("", "end", values=(item["id"], item["word"], item["meaning"], item["pos"]))
+        for item in filtered_words: 
+            word_table.insert("", "end", values=(item["id"], item["english"], item["meaning"], item["part_of_speech"]))
 
     # 검색 기능
     def search_word():
-        keyword = search_var.get().lower()
-        category = selected_category.get()
+
+        keyword = search_var.get().lower() #입력된 값
+        category = selected_category.get() #선택된 카테고리
+
         nonlocal filtered_words
         filtered_words = [
             w for w in words
-            if keyword in w['word'].lower()
-            and (category == "전체" or w["category"] == category)
+            if keyword in w['english'].lower() #입력한 값이 테이블에 있다면
+            and (category == "전체" or w["categories"] == category) #카테고리가 전체거나 일치하면 검색에 포함
         ]
+
         update_word_table()
         detail_text.set("")
 
@@ -63,11 +71,32 @@ def vocab_window(root):
         selected = word_table.focus()
         if selected:
             data = word_table.item(selected, "values")
-            word = next((w for w in filtered_words if str(w["id"]) == data[0]), None)
-            if word:
-                word["category"] = selected_word_category.get()
-                print(f"{word['word']} → 카테고리 변경: {word['category']}")
 
+            #선택된 카테고리 이름으로 카테고리 번호 조회
+            category_data = selected_word_category.get() #선택된 카테고리
+            #선택된 카테고리가 없으면 아무것도 하지 않음
+            if (category_data == "전체"):
+                return 
+
+            for category_search in word_db.get_categories():
+                if (category_search["name"] == category_data):
+                    category_number = category_search["category_id"]
+                    break
+
+            success = word_db.add_word_to_category(data[0], category_number) #카테고리 업데이트
+            if success:
+                messagebox.showinfo("성공", "카테고리가 업데이트 되었습니다.")
+            else:
+                messagebox.showwarning("경고", "실패")
+            
+            #변경된 카테고리가 있으므로 단어 테이블 다시 업데이트
+            nonlocal words
+            words = word_db.get_all_words()
+
+            # print(success)
+            print(word_db.get_all_words())
+
+    #단어 클릭 시 하단에 정보 출력
     def on_row_click(event):
         selected = word_table.focus()
         if selected:
@@ -80,8 +109,8 @@ def vocab_window(root):
                     break
 
             if word:
-                detail_text.set(f"품사: {word['pos']}\n예문: {word['example']}")
-                selected_word_category.set(word["category"])
+                detail_text.set(f"품사: {word['part_of_speech']}, 예문: {word['example']}\n오답 횟수: {word['wrong_count']}")
+                selected_word_category.set(word["categories"])
 
                 # 카테고리는 무조건 "전체"로 고정 표시
                 selected_word_category.set("전체")
@@ -100,7 +129,7 @@ def vocab_window(root):
         print(data[1])
 
     def go_to_category_manage():
-        category_manage(root)
+        category_manage(root, user_number)
 
     # GUI 시작
     root.title("단어장")
@@ -119,7 +148,11 @@ def vocab_window(root):
     top_bar = ttk.Frame(root)
     top_bar.pack(fill=tk.X, pady=5, padx=10)
 
-    categories = ["전체", "과일", "동작", "색상", "동물"]
+    #categories = ["전체", "과일", "동작", "색상", "동물"]
+    categories_db = word_db.get_categories()
+    categories = [item['name'] for item in categories_db] #딕셔너리 값들을 특징만 추출
+    categories.insert(0, "전체") #전체 항목 삽입
+    
     selected_category = tk.StringVar(value="전체")
     category_menu = ttk.OptionMenu(top_bar, selected_category, selected_category.get(), *categories, command=on_category_change)
     category_menu.pack(side=tk.LEFT)
@@ -153,16 +186,16 @@ def vocab_window(root):
     table_frame = ttk.Frame(root)
     table_frame.pack(padx=10, pady=10, fill=tk.BOTH, expand=True)
 
-    columns = ("id", "word", "meaning", "pos")
+    columns = ("id", "english", "meaning", "part_of_speech")
     word_table = ttk.Treeview(table_frame, columns=columns, show="headings", height=12, style="Custom.Treeview")  #단어 보여주는 목록 길이
     word_table.heading("id", text="ID")
-    word_table.heading("word", text="단어")
+    word_table.heading("english", text="단어")
     word_table.heading("meaning", text="의미")
-    word_table.heading("pos", text="품사")
+    word_table.heading("part_of_speech", text="품사")
     word_table.column("id", width=50, anchor="center")
-    word_table.column("word", width=150, anchor="center")
+    word_table.column("english", width=150, anchor="center")
     word_table.column("meaning", width=150, anchor="center")
-    word_table.column("pos", width=80, anchor="center")
+    word_table.column("part_of_speech", width=80, anchor="center")
     word_table.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
     word_table.bind("<<TreeviewSelect>>", on_row_click)
 

@@ -19,9 +19,6 @@ def quiz_interpret(root1):
     def enter(entered_text):
         nonlocal current_index
 
-        # if entered_text == None:
-        #     entered_text = ""
-
         if (entered_text == word_list[current_index][0]):
             word_list_anwser[current_index] = 1
         else:
@@ -30,7 +27,6 @@ def quiz_interpret(root1):
             word_list[current_index][2] += 1 
             
         next_word()
-
 
     def next_word():
         nonlocal current_index

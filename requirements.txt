@@ -6,3 +6,4 @@ os
 hashlib
 csv
 typing
+pip install ttkbootstrap

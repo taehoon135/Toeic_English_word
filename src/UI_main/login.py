@@ -45,6 +45,7 @@ def sign_login(root):
 
     # 로그인
     def login_action(id, password, mode_var, root):
+        main_menu(root, 1) #임시
 
         #입력이 안된 상태 고려
         if (id.has_placeholder or id.get().strip() == ""):
@@ -57,12 +58,11 @@ def sign_login(root):
         selected_mode = mode_var.get() #관리자 모드인지 사용자 모드인지 판별함
 
         if (selected_mode == "사용자 모드"):
-            print(user_db.login_user(id.get(), password.get()))
-            main_menu(root) #임시
 
-            if (user_db.login_user(id.get(), password.get()) != None): #리턴값에 대한 설명 필요
+            user_number = user_db.login_user(id.get(), password.get()) #유저의 고유 key 획득
+            if (user_number != None): 
                 messagebox.showinfo("성공", "로그인 성공!")
-                main_menu(root)  # root를 main_menu 함수에 전달
+                main_menu(root, user_number)  # root를 main_menu 함수에 전달
             else:
                 messagebox.showerror("오류", "ID 또는 비밀번호가 잘못되었습니다.")
 

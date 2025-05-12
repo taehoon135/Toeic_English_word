@@ -4,7 +4,7 @@ from ttkbootstrap.constants import *
 from PIL import Image, ImageTk
 from tkinter import Tk, Frame
 
-def quiz_menu(root):
+def quiz_menu(root, user_number):
     from quiz_interpret import quiz_interpret
     from quiz_four_choice import quiz_four_choice
     from quiz_word import quiz_word1
@@ -25,10 +25,10 @@ def quiz_menu(root):
     style.configure("Normal.TEntry", foreground="black")
 
     def go_to_menu():
-        main_menu(root)
+        main_menu(root, user_number)
     
     def go_to_ranking():
-        ranking(root)
+        ranking(root, user_number)
 
     button_frame = ttk.Frame(root)
     button_frame.pack(fill="x", pady=10, padx=10)
@@ -41,12 +41,12 @@ def quiz_menu(root):
     home_button = ttk.Button(button_frame, text="🏠 홈", bootstyle="secondary", command=go_to_menu)
     home_button.pack(side="right")
 
-    # 옵션 선택 (OptionMenu)
-    option_var = tk.StringVar(value="Category 1")
-    options = ["Category 1", "Category 1", "Category 2", "Category 3", "Category 4"]
 
+    # 옵션 선택 (OptionMenu)
+    options = ["전체", "Category 1", "Category 2", "Category 3", "Category 4"] #개인 별로 이런 카테고리가 들어온다고 가정
+    option_var = tk.StringVar(value="전체")
     #가젯 생성
-    option_menu = ttk.OptionMenu(root, option_var, *options)
+    option_menu = ttk.OptionMenu(root, option_var, option_var.get(),*options)
     option_menu.pack(pady=10)
 
     # 모드 선택 (OptionMenu)
@@ -106,19 +106,19 @@ def quiz_menu(root):
 
     # 모드에 따라 다른 함수 실행
     def mode_1_function():
-        quiz_interpret(root)
+        quiz_interpret(root, user_number)
 
     def mode_1_5_function():
-        quiz_word1(root)
+        quiz_word1(root, user_number)
 
     def mode_2_function():
-        quiz_four_choice(root)
+        quiz_four_choice(root, user_number)
 
     def mode_3_function():
-        quiz_sentence(root)
+        quiz_sentence(root, user_number)
 
     def mode_4_function():
-        game = AcidRainGame(root)
+        game = AcidRainGame(root, user_number)
 
     # Start 버튼 클릭 시 실행될 함수
     def start_button_clicked():
@@ -138,9 +138,8 @@ def quiz_menu(root):
         elif selected_mode == "산성비 게임":
             mode_4_function()
         else:
-            print("올바른 모드를 선택해주세요.")
+            print("오류 발생")
 
     # 시작 버튼 (맨 아래 배치)
     start_button = ttk.Button(root, text="시작", bootstyle="success", command=start_button_clicked)
     start_button.pack(pady=20, padx=150, fill="x")
-    #root.bind("<Return>", lambda event: start_button_clicked()) #엔터키로 동작 가능
