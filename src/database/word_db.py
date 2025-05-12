@@ -159,15 +159,33 @@ class WordDB(BaseDatabase):
 
     # 단어 추가 (핵심 기능)
     def add_word(self, word: str, meaning: str, part_of_speech: str, example: str, category_id: Optional[int] = None) -> int:
-        self.execute(
-            """
-            INSERT INTO Word (english, korean, part_of_speech, example_sentence, category_id)
-            VALUES (?, ?, ?, ?, ?)
-            """,
-            (word, meaning, part_of_speech, example, category_id)
-        )
-        self.commit()
-        return self.cursor.lastrowid
+        try:
+            self.execute(
+                """
+                INSERT INTO Word (english, meaning, part_of_speech, example_sentence)
+                VALUES (?, ?, ?, ?)
+                """,
+                (word, meaning, part_of_speech, example)
+            )
+            self.commit()
+            new_word_id = self.cursor.lastrowid
+            
+            # 카테고리가 지정된 경우 WordCategory 테이블에도 추가
+            if category_id:
+                self.execute(
+                    """
+                    INSERT INTO WordCategory (word_id, category_id)
+                    VALUES (?, ?)
+                    """,
+                    (new_word_id, category_id)
+                )
+                self.commit()
+            
+            return new_word_id  # 새로 생성된 단어의 ID 반환
+        except Exception as e:
+            self.rollback()
+            print(f"Error in add_word: {e}")
+            return -1  # 에러 발생 시 -1 반환
 
     # 카테고리 추가
     def add_category(self, name: str) -> bool:
@@ -297,10 +315,12 @@ class WordDB(BaseDatabase):
         keyword = f"%{keyword}%"
         return self.fetch_all(
             """
-            SELECT w.*, c.name as category_name
+            SELECT w.*, GROUP_CONCAT(c.name) as category_names
             FROM Word w
-            LEFT JOIN Category c ON w.category_id = c.category_id
+            LEFT JOIN WordCategory wc ON w.word_id = wc.word_id
+            LEFT JOIN Category c ON wc.category_id = c.category_id
             WHERE w.english LIKE ? OR w.meaning LIKE ?
+            GROUP BY w.word_id
             ORDER BY w.english
             """,
             (keyword, keyword)
@@ -333,16 +353,36 @@ class WordDB(BaseDatabase):
 
     # 단어 정보 수정
     def update_word(self, word_id: int, word: str, meaning: str, part_of_speech: str, example: str, category_id: Optional[int] = None) -> bool:
-        self.execute(
-            """
-            UPDATE Word
-            SET english = ?, meaning = ?, part_of_speech = ?, example_sentence = ?, category_id = ?
-            WHERE word_id = ?
-            """,
-            (word, meaning, part_of_speech, example, category_id, word_id)
-        )
-        self.commit()
-        return True
+        try:
+            # Word 테이블 업데이트
+            self.execute(
+                """
+                UPDATE Word
+                SET english = ?, meaning = ?, part_of_speech = ?, example_sentence = ?
+                WHERE word_id = ?
+                """,
+                (word, meaning, part_of_speech, example, word_id)
+            )
+            
+            # 카테고리 관계 업데이트
+            if category_id is not None:
+                # 기존 카테고리 관계 제거
+                self.execute(
+                    "DELETE FROM WordCategory WHERE word_id = ?",
+                    (word_id,)
+                )
+                # 새로운 카테고리 관계 추가
+                self.execute(
+                    "INSERT INTO WordCategory (word_id, category_id) VALUES (?, ?)",
+                    (word_id, category_id)
+                )
+            
+            self.commit()
+            return True
+        except Exception as e:
+            self.rollback()
+            print(f"Error in update_word: {e}")
+            return False
 
     # 단어 삭제
     def delete_word(self, word_id: int) -> bool:
@@ -364,14 +404,4 @@ class WordDB(BaseDatabase):
             ORDER BY w.wrong_count DESC
             """,
             (min_wrong_count,)
-        )
-
-word_db = WordDB()
-
-csv_file = os.path.join(os.path.dirname(os.path.dirname(__file__)), "sample_words.csv")
-if os.path.exists(csv_file):
-    if not word_db.get_all_words():
-        if word_db.import_from_csv(csv_file):
-            print("단어 데이터가 성공적으로 가져와졌습니다.")
-        else:
-            print("단어 데이터 가져오기에 실패했습니다.") 
+        ) 
