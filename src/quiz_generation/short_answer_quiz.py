@@ -14,9 +14,9 @@ class ShortAnswerEKQuizModel(BaseQuizModel):
     
     def _parse_db(self, db):
         for word in db:
-            word_id, english, meaning, pos, example = word
-            self.words.append(english)
-            self.meanings.append(meaning)
+            #word_id, english, meaning, pos, example = word
+            self.words.append(word["english"])
+            self.meanings.append(word["meaning"])
         self._create_pairs()
 
     def _create_pairs(self):
@@ -58,9 +58,9 @@ class ShortAnswerKEQuizModel(BaseQuizModel):
     
     def _parse_db(self, db):
         for word in db:
-            word_id, english, meaning, pos, example = word
-            self.words.append(english)
-            self.meanings.append(meaning)
+            #word_id, english, meaning, pos, example = word
+            self.words.append(word["english"])
+            self.meanings.append(word["meaning"])
         self._create_pairs()
 
     def _create_pairs(self):
