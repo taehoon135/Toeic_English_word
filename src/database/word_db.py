@@ -80,7 +80,6 @@ class WordDB(BaseDatabase):
                     w.meaning,
                     w.part_of_speech,
                     w.example_sentence as example,
-                    w.pronunciation_audio as pronunciation_file,
                     w.wrong_count,
                     w.created_at,
                     GROUP_CONCAT(c.name) as categories
@@ -91,6 +90,7 @@ class WordDB(BaseDatabase):
                 ORDER BY w.word_id
             """)
         except Exception as e:
+            print(f"Error in get_all_words: {e}")
             return []
 
     # 카테고리별 단어 목록 조회
@@ -237,20 +237,39 @@ class WordDB(BaseDatabase):
     # Word, WordHistory 테이블 생성 및 초기화
     def initialize_tables(self):
         self.execute("DROP TABLE IF EXISTS WordHistory")
+        self.execute("DROP TABLE IF EXISTS WordCategory")
         self.execute("DROP TABLE IF EXISTS Word")
+        self.execute("DROP TABLE IF EXISTS Category")
+        
+        self.execute("""
+        CREATE TABLE IF NOT EXISTS Category (
+            category_id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL UNIQUE
+        )
+        """)
+        
         self.execute("""
         CREATE TABLE IF NOT EXISTS Word (
             word_id INTEGER PRIMARY KEY AUTOINCREMENT,
             english TEXT NOT NULL,
-            korean TEXT NOT NULL,
+            meaning TEXT NOT NULL,
             part_of_speech TEXT,
             example_sentence TEXT,
-            category_id INTEGER,
             wrong_count INTEGER DEFAULT 0,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+        """)
+        
+        self.execute("""
+        CREATE TABLE IF NOT EXISTS WordCategory (
+            word_id INTEGER,
+            category_id INTEGER,
+            PRIMARY KEY (word_id, category_id),
+            FOREIGN KEY (word_id) REFERENCES Word(word_id),
             FOREIGN KEY (category_id) REFERENCES Category(category_id)
         )
         """)
+        
         self.execute("""
         CREATE TABLE IF NOT EXISTS WordHistory (
             history_id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -267,7 +286,7 @@ class WordDB(BaseDatabase):
 
     # 단어장 전체 리스트(영어, 해석, 품사)
     def get_word_list(self):
-        return self.fetch_all("SELECT word_id, english, korean, part_of_speech FROM Word")
+        return self.fetch_all("SELECT word_id, english, meaning, part_of_speech FROM Word")
 
     # 단어 상세정보(예문, 발음)
     def get_word_detail(self, word_id):
@@ -281,7 +300,7 @@ class WordDB(BaseDatabase):
             SELECT w.*, c.name as category_name
             FROM Word w
             LEFT JOIN Category c ON w.category_id = c.category_id
-            WHERE w.english LIKE ? OR w.korean LIKE ?
+            WHERE w.english LIKE ? OR w.meaning LIKE ?
             ORDER BY w.english
             """,
             (keyword, keyword)
@@ -317,7 +336,7 @@ class WordDB(BaseDatabase):
         self.execute(
             """
             UPDATE Word
-            SET english = ?, korean = ?, part_of_speech = ?, example_sentence = ?, category_id = ?
+            SET english = ?, meaning = ?, part_of_speech = ?, example_sentence = ?, category_id = ?
             WHERE word_id = ?
             """,
             (word, meaning, part_of_speech, example, category_id, word_id)
@@ -333,17 +352,6 @@ class WordDB(BaseDatabase):
         )
         self.commit()
         return True
-
-    # 전체 단어 목록(카테고리 포함) 조회
-    def get_all_words(self) -> List[Dict]:
-        return self.fetch_all(
-            """
-            SELECT w.*, c.name as category_name
-            FROM Word w
-            LEFT JOIN Category c ON w.category_id = c.category_id
-            ORDER BY w.english
-            """
-        )
 
     # 오답 횟수 기준 단어 목록 조회
     def get_words_by_wrong_count(self, min_wrong_count: int = 1) -> List[Dict]:
