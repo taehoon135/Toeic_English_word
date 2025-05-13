@@ -312,7 +312,7 @@ class WordDB(BaseDatabase):
 
     # 단어 검색 (영어/한글)
     def search_words(self, keyword: str) -> List[Dict]:
-        keyword = f"%{keyword}%"
+        keyword = f"{keyword}%"
         return self.fetch_all(
             """
             SELECT w.*, GROUP_CONCAT(c.name) as category_names
