@@ -41,10 +41,10 @@ def ranking(root, user_number):
     columns = ("순위", "사용자ID", "최고점수")
 
     # Treeview 스타일 설정 (선택 시 파란색 배경 제거)
-    style = ttk.Style()
-    style.configure("Custom.Treeview", highlightthickness=0, bd=0, font=('Arial', 10))
-    style.configure("Custom.Treeview.Heading", font=('Arial', 10, 'bold'))
-    style.map("Custom.Treeview", background=[("selected", "white")], foreground=[("selected", "black")])
+    # style = ttk.Style()
+    # style.configure("Custom.Treeview", highlightthickness=0, bd=0, font=('Arial', 10))
+    # style.configure("Custom.Treeview.Heading", font=('Arial', 10, 'bold'))
+    # style.map("Custom.Treeview", background=[("selected", "white")], foreground=[("selected", "black")])
 
     # Treeview 위젯 생성
     tree = ttk.Treeview(result_frame, columns=columns, show="headings", height=20, style="Custom.Treeview")

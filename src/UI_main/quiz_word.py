@@ -3,7 +3,7 @@ from tkinter import messagebox
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 
-def quiz_word1(root1):
+def quiz_word1(root1, user_number):
     from quiz_result import quiz_result
 
     #이런 배열을 데베에서 받았다고 가정

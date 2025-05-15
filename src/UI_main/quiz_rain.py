@@ -3,7 +3,7 @@ import random
 from PIL import Image, ImageTk
 
 class AcidRainGame:
-    def __init__(self, root):
+    def __init__(self, root, user_number):
         for widget in root.winfo_children():  # 기존 UI 제거
             widget.destroy()
 

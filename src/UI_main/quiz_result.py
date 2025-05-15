@@ -83,7 +83,7 @@ from ttkbootstrap.constants import *
 #     exit_btn.place(x=480, y=540)
 
 
-def quiz_result(root, word_list, word_list_answer):
+def quiz_result(root, user_number, word_list, word_list_answer):
     # 메인 메뉴 함수 import
     from menu import main_menu
 
@@ -99,13 +99,7 @@ def quiz_result(root, word_list, word_list_answer):
     result_frame.place(x=10, y=20, width=480, height=500)
 
     # Treeview에 표시할 컬럼 정의 ('mistakes'는 제거됨)
-    columns = ("Sentence", "Word", "correctness")
-
-    # Treeview 스타일 설정 (선택 시 파란색 배경 제거)
-    style = ttk.Style()
-    style.configure("Custom.Treeview", highlightthickness=0, bd=0, font=('Arial', 10))
-    style.configure("Custom.Treeview.Heading", font=('Arial', 10, 'bold'))
-    style.map("Custom.Treeview", background=[("selected", "white")], foreground=[("selected", "black")])
+    columns = ("Word", "Meaning", "correctness")
 
     # Treeview 위젯 생성
     tree = ttk.Treeview(result_frame, columns=columns, show="headings", height=20, style="Custom.Treeview")
@@ -124,13 +118,15 @@ def quiz_result(root, word_list, word_list_answer):
     scrollbar.pack(side="right", fill="y")
 
     # Treeview에 단어 데이터 삽입
-    for i, (word, meaning, _, _) in enumerate(word_list):
+    for i, word_info in enumerate(word_list):
+        word = word_info["english"]
+        meaning = word_info["meaning"]
         correctness = "O" if word_list_answer[i] == 1 else "X"  # 정답 여부 표시
         tree.insert("", "end", iid=i, values=(word, meaning, correctness))
 
     # '메인 메뉴' 버튼 클릭 시 실행되는 함수
     def go_to_main_menu():
-        main_menu(root)
+        main_menu(root, user_number)
 
     # '메인 메뉴' 버튼 생성 및 배치
     exit_btn = ttk.Button(root, text="메인 메뉴", bootstyle="success", command=go_to_main_menu)

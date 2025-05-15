@@ -13,6 +13,20 @@ def quiz_menu(root, user_number):
     from menu import main_menu
     from ranking import ranking
 
+    #DB연결
+    import os
+    import sys
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  #나보다 위 디렉토리에 있음
+    from database.category_db import CategoryDB
+
+    #카테고리값 임시로 생성
+    category_db = CategoryDB()
+    
+    category_db.create_category(user_number, "전체") #기본적으로 포함되어 있어야 하나 어떻게 되있을지는 모름
+    category_db.create_category(user_number, "category1")
+    category_db.create_category(user_number, "category2")
+    category_db.create_category(user_number, "i'm category")
+
     for widget in root.winfo_children():  # 기존 UI 제거
         widget.destroy()
 
@@ -41,10 +55,15 @@ def quiz_menu(root, user_number):
     home_button = ttk.Button(button_frame, text="🏠 홈", bootstyle="secondary", command=go_to_menu)
     home_button.pack(side="right")
 
-
     # 옵션 선택 (OptionMenu)
-    options = ["전체", "Category 1", "Category 2", "Category 3", "Category 4"] #개인 별로 이런 카테고리가 들어온다고 가정
+    category_list = category_db.get_user_categories(user_number)
+    category_only_name = [] #카테고리 이름만을 포함하는 리스트 생성
+    for category in category_list:
+        category_only_name.append(category["name"])
+
+    options = category_only_name
     option_var = tk.StringVar(value="전체")
+
     #가젯 생성
     option_menu = ttk.OptionMenu(root, option_var, option_var.get(),*options)
     option_menu.pack(pady=10)
@@ -112,7 +131,8 @@ def quiz_menu(root, user_number):
         quiz_word1(root, user_number)
 
     def mode_2_function():
-        quiz_four_choice(root, user_number)
+        selected_category = option_var.get()
+        quiz_four_choice(root, user_number, selected_category) #선택된 카테고리로 str값임
 
     def mode_3_function():
         quiz_sentence(root, user_number)
@@ -125,7 +145,7 @@ def quiz_menu(root, user_number):
         selected_mode = mode_var.get()
         selected_category = option_var.get()
         
-        print(f"Start 버튼 클릭됨! 선택된 카테고리: {selected_category}, 모드: {selected_mode}")
+        #print(f"Start 버튼 클릭됨! 선택된 카테고리: {selected_category}, 모드: {selected_mode}")
 
         if selected_mode == "해석 맞추기":
             mode_1_function()

@@ -29,7 +29,7 @@ def vocab_window(root, user_number):
     word_db.add_word('blue', '파란', '형용사' , 'The sky is blue', 0)
 
     words = word_db.get_all_words()
-    # print(word_db.get_all_words())
+    #print(word_db.get_all_words())
 
     # 카테고리 임의 생성
     word_db.add_category("test1")
