@@ -46,6 +46,8 @@ def quiz_four_choice(root1, user_number, category_id_str):
         print("No words found")
         exit()
 
+    print(word_list)
+
     #받은 카테고리는 str 형태이므로 카테고리 id를 찾음
     category_db = CategoryDB()
 

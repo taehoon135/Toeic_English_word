@@ -7,6 +7,7 @@ from tkinter import PhotoImage
 def vocab_window(root, user_number):
     from menu import main_menu
     from category_manage import category_manage
+    from assist_module import category_id_search, word_id_search
 
     for widget in root.winfo_children():  # 기존 UI 제거
         widget.destroy()
@@ -22,20 +23,12 @@ def vocab_window(root, user_number):
     sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  #나보다 위 디렉토리에 있음
     from database.word_db import WordDB
 
-    # 단어 추가 -> 테스트를 위해 임의로 생성
     word_db = WordDB() #데베 클래스 생성
-    word_db.add_word('apple','사과', '명사', 'I ate an apple', 0)
-    word_db.add_word('run','달리다', '동사', 'she runs fast', 0)
-    word_db.add_word('blue', '파란', '형용사' , 'The sky is blue', 0)
-
     words = word_db.get_all_words()
-    #print(word_db.get_all_words())
 
-    # 카테고리 임의 생성
-    word_db.add_category("test1")
-    word_db.add_category("test2")
-    word_db.add_category("test3")
-    # print(word_db.get_categories())
+    # 카테고리 연결
+    from database.category_db import CategoryDB
+    category_db = CategoryDB()
 
     filtered_words = words.copy()
 
@@ -44,20 +37,34 @@ def vocab_window(root, user_number):
         for row in word_table.get_children():
             word_table.delete(row)
         for item in filtered_words: 
-            word_table.insert("", "end", values=(item["id"], item["english"], item["meaning"], item["part_of_speech"]))
+            word_table.insert("", "end", values=(item["word_id"], item["english"], item["meaning"], item["part_of_speech"]))
 
     # 검색 기능
     def search_word():
-
         keyword = search_var.get().lower() #입력된 값
         category = selected_category.get() #선택된 카테고리
 
         nonlocal filtered_words
-        filtered_words = [
-            w for w in words
-            if keyword in w['english'].lower() #입력한 값이 테이블에 있다면
-            and (category == "전체" or w["categories"] == category) #카테고리가 전체거나 일치하면 검색에 포함
-        ]
+        filtered_words = []
+
+        if (category == "전체"):
+            for w in words:
+                if keyword in w["english"].lower():
+                    filtered_words.append(w)
+        else:
+            #카테고리 번호 찾기
+            category_id = category_id_search(user_number, category)
+            if category_id == -1:
+                print("오류 발생")
+                return
+
+            #카테고리 아이디로 카테고리 속한 단어들 검색
+            search_category_list = category_db.get_words_in_category(category_id)
+            
+            for w in words:
+                #입력한 값이 테이블에 있다면, 카테고리가 전체거나 일치하면 검색에 포함
+                if keyword in w['english'].lower() and any(w['english'] == s['english'] for s in search_category_list):
+                    filtered_words.append(w)
 
         update_word_table()
         detail_text.set("")
@@ -78,23 +85,18 @@ def vocab_window(root, user_number):
             if (category_data == "전체"):
                 return 
 
-            for category_search in word_db.get_categories():
-                if (category_search["name"] == category_data):
-                    category_number = category_search["category_id"]
-                    break
+            #카테고리 번호 찾기
+            category_number = category_id_search(user_number, category_data)
+            if category_number == -1:
+                print("오류 발생")
+                return
 
-            success = word_db.add_word_to_category(data[0], category_number) #카테고리 업데이트
+            #카테고리 아이디, 워드 아이디
+            success = category_db.add_word_to_category(category_number, data[0]) #카테고리 업데이트
             if success:
                 messagebox.showinfo("성공", "카테고리가 업데이트 되었습니다.")
             else:
                 messagebox.showwarning("경고", "실패")
-            
-            #변경된 카테고리가 있으므로 단어 테이블 다시 업데이트
-            nonlocal words
-            words = word_db.get_all_words()
-
-            # print(success)
-            print(word_db.get_all_words())
 
     #단어 클릭 시 하단에 정보 출력
     def on_row_click(event):
@@ -102,15 +104,14 @@ def vocab_window(root, user_number):
         if selected:
             data = word_table.item(selected, "values")
 
-            word = None
+            #단어 이름으로 단어 튜플을 통째로 찾음
             for w in filtered_words:
-                if str(w["id"]) == data[0]:
+                if w["english"] == data[1]:
                     word = w
                     break
 
             if word:
-                detail_text.set(f"품사: {word['part_of_speech']}, 예문: {word['example']}\n오답 횟수: {word['wrong_count']}")
-                selected_word_category.set(word["categories"])
+                detail_text.set(f"품사: {word['part_of_speech']}\n예문: {word['example_sentence']}\n오답 횟수: {word['wrong_count']}")
 
                 # 카테고리는 무조건 "전체"로 고정 표시
                 selected_word_category.set("전체")
@@ -148,9 +149,9 @@ def vocab_window(root, user_number):
     top_bar = ttk.Frame(root)
     top_bar.pack(fill=tk.X, pady=5, padx=10)
 
-    #categories = ["전체", "과일", "동작", "색상", "동물"]
-    categories_db = word_db.get_categories()
-    categories = [item['name'] for item in categories_db] #딕셔너리 값들을 특징만 추출
+    #카테고리 부분
+    categories_from_db = category_db.get_categories_by_user(user_number)
+    categories = [item['name'] for item in categories_from_db] #딕셔너리 값들을 특징만 추출
     categories.insert(0, "전체") #전체 항목 삽입
     
     selected_category = tk.StringVar(value="전체")
@@ -226,7 +227,7 @@ def vocab_window(root, user_number):
     confirm_button.grid(row=0, column=1, sticky="w")
 
     # 소리 듣기 버튼 (tk.Button 사용)
-    check_img = PhotoImage(file="C:\\github\\sw-egineering\\src\\UI_main\\z.sound.png")
+    check_img = PhotoImage(file="C:\\github\\sw-egineering\\src\\UI_main\\asset\\z.sound.png")
     sound_button = tk.Button(
         option_row,
         image=check_img,

@@ -7,28 +7,21 @@ from tkinter import PhotoImage
 def category_manage(root, user_number):
     from vocab import vocab_window
     from category_make import category_make
+    from category_adjust import category_adjust
+    from assist_module import category_id_search, word_id_search
     
     #DB연결
     import os
     import sys
     sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  #나보다 위 디렉토리에 있음
     from database.word_db import WordDB
+    from database.category_db import CategoryDB
 
     word_db = WordDB()
+    category_db = CategoryDB()
 
-    word_db.add_word('apple','사과', '명사', 'I ate an apple', 0)
-    word_db.add_word('run','달리다', '동사', 'she runs fast', 0)
-    word_db.add_word('blue', '파란', '형용사' , 'The sky is blue', 0)
     # 카테고리 임의 생성
-    word_db.add_category("test1")
-    word_db.add_category("test2")
-    word_db.add_category("test3")
-
-    word_db.add_word_to_category(1, 1) #카테고리 업데이트
-    word_db.add_word_to_category(2, 1) #카테고리 업데이트
-    word_db.add_word_to_category(3, 2) #카테고리 업데이트
-
-    category_word = word_db.get_categories()
+    category_word = category_db.get_categories_by_user(user_number)
 
     for widget in root.winfo_children():  # 기존 UI 제거
         widget.destroy()
@@ -43,67 +36,54 @@ def category_manage(root, user_number):
 
     #마지막으로 선택된 트리뷰 구분
     last_selected_tree = None
-
-    #카테고리 이름으로 카테고리 번호를 찾아줌
-    def search_category_id():
-        selected = category_table.focus()
-        data = category_table.item(selected, "values")
-
-        #data에는 카테고리와 단어 갯수밖에 없으므로 카테고리 이름으로 카테고리 id찾기
-        for category_name in category_word:
-            if (category_name["name"] == data[0]): #선택된 이름이 카테고리 이름 중 일치하는 것을 찾음
-                category_id = category_name["category_id"]
-                return category_id
         
     #카테고리 삭제
     def delete_category():
-        # selected = category_table.focus()
-        # data = category_table.item(selected, "values")
-
         # #data에는 카테고리와 단어 갯수밖에 없으므로 카테고리 이름으로 카테고리 id찾기
-        # for category_name in category_word:
-        #     if (category_name["name"] == data[0]): #선택된 이름이 카테고리 이름 중 일치하는 것을 찾음
-        #         category_id = category_name["category_id"]
-        #         break
-        category_id = search_category_id()
+        selected = category_table.selection()
+        data = category_table.item(selected, "values")
+
+        #카테고리 아이디 검색
+        category_id = category_id_search(user_number, data[0])
+        if category_id == -1:
+            print("오류 발생")
+            return
         
         confirm = messagebox.askyesno("카테고리 삭제", "정말로 삭제하시겠습니까?")
         if confirm:
-            #print(data[0] + " 카테고리 삭제")
-            if (word_db.delete_category(category_id)):
+            print(data[0] + " 카테고리 삭제")
+            if (category_db.delete_category(category_id, user_number)):
                 messagebox.showinfo("성공!", "카테고리를 삭제했습니다.")
             else:
                 messagebox.showwarning("실패", "오류 발생")
 
             update_word_table() #카테고리 목록 초기화
-            #선택된 트리뷰 초기화
-            # nonlocal last_selected_tree
-            # last_selected_tree = None
         else:
             return
         
     #카테고리 내의 단어 삭제
     def delete_word_in_category():
-        #카테고리 데이터
-        # selected = category_table.focus()
-        # data = category_table.item(selected, "values")
-        category_id = search_category_id()
+        #카테고리 아이디 검색
+        selected = category_table.selection()
+        data = category_table.item(selected, "values")
+
+        category_id = category_id_search(user_number, data[0])
+        if category_id == -1:
+            print("오류 발생")
+            return
 
         #카테고리에 속한 단어 데이터
-        selected_word = word_table.focus()
+        selected_word = word_table.selection()
         data_word = word_table.item(selected_word, "values") #여기 부분은 달라질 수 있음
-
-        #단어 id 검색 과정
-        for search_word_id in word_db.get_all_words():
-            if search_word_id["english"] == data_word[0]:
-                word_id = search_word_id["id"]
-                break
+        
+        #카테고리별 단어 목록 획득
+        word_in_category = category_db.get_words_in_category(category_id)
+        #단어 id 검색
+        word_id = word_id_search(word_in_category, data_word[0])
 
         confirm = messagebox.askyesno("단어 삭제", "정말로 삭제하시겠습니까?")
         if confirm:
-            # print(data[0] + " 카테고리의 " + data_word[0] + " 단어 삭제")
-
-            if word_db.remove_word_from_category(word_id, category_id):
+            if category_db.remove_word_from_category(category_id, word_id):
                 messagebox.showinfo("성공!", "단어를 삭제했습니다.")
             else:
                 messagebox.showwarning("실패" ,"오류 발생")
@@ -121,39 +101,65 @@ def category_manage(root, user_number):
             delete_category()
         elif (last_selected_tree == word_table):
             delete_word_in_category()
+
+    #카테고리 이름 수정
+    def adjust_category():
+        nonlocal last_selected_tree
+        if (last_selected_tree == None):
+            messagebox.showwarning("선택 오류", "아무것도 선택되지 않음.")
+
+        elif (last_selected_tree == category_table):
+            #카테고리 아이디 검색
+            selected = category_table.selection()
+            data = category_table.item(selected, "values")
+            category_id = category_id_search(user_number, data[0])
+
+            category_adjust(root, user_number, category_id)
+
+        elif (last_selected_tree == word_table):
+            messagebox.showwarning("선택 오류", "카테고리를 선택해주세요.")
     
     # 단어 테이블 업데이트
     def update_word_table():
         nonlocal category_word
-        category_word = word_db.get_categories() #초기화
-
-        for row in category_table.get_children(): #기존 카테고리 목록 삭제
-            category_table.delete(row)
-        for item in category_word:
-            category_table.insert("", "end", values=(item["name"], item["word_count"])) #카테고리 새로 다시 업데이트
-
-        #기존 단어 전부 삭제
-        for row2 in word_table.get_children():
-                word_table.delete(row2)
-
         nonlocal last_selected_tree
-        #마지막으로 선택된 테이블이 단어 테이블 이라면 업데이트
-        if (last_selected_tree == word_table):
-            category_id = search_category_id()
-            word_in_category = word_db.get_words_by_category(category_id)
+        category_word = category_db.get_categories_by_user(user_number) #초기화
 
-            #새로 업데이트된 해당 카테고리의 단어 목록 출력
-            print(word_in_category)
-            last_selected_tree = None #선택된 트리뷰 초기화
-        #아니면 아무것도 하지 않음
+        #카테고리 선택 시 출력되는 단어 전부 삭제 (무조건 실행해야 함)
+        for row2 in word_table.get_children():
+            word_table.delete(row2)
+
+        #마지막으로 선택된 것이 카테고리 테이블이라면 카테고리를 삭제했다는 의미임
+        if last_selected_tree == category_table:
+            for row in category_table.get_children(): #기존 카테고리 목록 삭제
+                category_table.delete(row)
+            for item in category_word:
+                category_table.insert("", "end", values=(item["name"], item["word_count"])) #카테고리 새로 다시 업데이트
+
+        #마지막으로 선택된 테이블이 단어 테이블 이라면 카테고리를 삭제하지 않고 단어 목록 업데이트
+        elif (last_selected_tree == word_table):
+            selected = category_table.selection()
+            data = category_table.item(selected, "values")
+
+            category_id = category_id_search(user_number, data[0])
+            if category_id == -1:
+                print("오류 발생")
+                return
+
+            word_in_category = category_db.get_words_in_category(category_id)
+            for item in word_in_category:
+                word_table.insert("", "end", values=(item["english"], item["meaning"]))
+        
         else: 
-            last_selected_tree = None #선택된 트리뷰 초기화
+            print("오류 발생")
+
+        last_selected_tree = None #선택된 트리뷰 초기화
 
     #treeview를 클릭했을때의 처리
     def on_row_click(event):
         nonlocal last_selected_tree
         selected_tree = event.widget
-        selected_item = selected_tree.focus()
+        selected_item = selected_tree.selection()
         data = selected_tree.item(selected_item, "values")
 
         #마지막으로 카테고리가 선택된 경우
@@ -161,19 +167,21 @@ def category_manage(root, user_number):
             last_selected_tree = category_table
 
             #data에는 카테고리와 단어 갯수밖에 없으므로 카테고리 이름으로 카테고리 id찾기
-            # for category_name in category_word:
-            #     if (category_name["name"] == data[0]): #선택된 이름이 카테고리 이름 중 일치하는 것을 찾음
-            #         category_id = category_name["category_id"]
-            #         break
-            category_id = search_category_id()
+            category_id = category_id_search(user_number, data[0])
+            if category_id == -1:
+                print("오류 발생")
+                return
 
             #기존 목록 삭제
             for row in word_table.get_children():
                 word_table.delete(row)
 
             #카테고리별 단어 목록 획득
-            word_in_category = word_db.get_words_by_category(category_id)
-            print(word_in_category)
+            word_in_category = category_db.get_words_in_category(category_id)
+
+            #워드 테이블 업데이트
+            for item in word_in_category:
+                word_table.insert("", "end", values=(item["english"], item["meaning"]))
 
         #마지막으로 카테고리 내의 단어가 선택된 경우
         elif (selected_tree == word_table and selected_item):
@@ -243,7 +251,12 @@ def category_manage(root, user_number):
 
     #삭제 버튼
     delete_button = ttk.Button(bottom_frame, text="삭제", style="Big.TButton", command=lambda: category_or_word(category_table, word_table))
-    delete_button.pack(anchor="e")
+    delete_button.pack(side="right", padx=(0, 0))
+
+    #수정 버튼
+    adjust_button = ttk.Button(bottom_frame, text="수정", style="Big.TButton", command=lambda: adjust_category())
+    adjust_button.pack(side="right", padx=(0, 10))
 
     # 초기 카테고리 표시
+    last_selected_tree = category_table
     update_word_table()

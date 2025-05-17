@@ -16,9 +16,9 @@ class AcidRainGame:
         self.canvas.pack()
 
         # 이미지 로드
-        self.heart_red = ImageTk.PhotoImage(Image.open("C:\\github\\sw-egineering\\src\\UI_main\\free-icon-red_heart.png").resize((30, 30)))
-        self.heart_black = ImageTk.PhotoImage(Image.open("C:\\github\\sw-egineering\\src\\UI_main\\free-icon-black_heart.png").resize((30, 30)))
-        self.wave_img = ImageTk.PhotoImage(Image.open("C:\\github\\sw-egineering\\src\\UI_main\\free-icon-wave.png").resize((100, 30)))
+        self.heart_red = ImageTk.PhotoImage(Image.open("C:\\github\\sw-egineering\\src\\UI_main\\asset\\free-icon-red_heart.png").resize((30, 30)))
+        self.heart_black = ImageTk.PhotoImage(Image.open("C:\\github\\sw-egineering\\src\\UI_main\\asset\\free-icon-black_heart.png").resize((30, 30)))
+        self.wave_img = ImageTk.PhotoImage(Image.open("C:\\github\\sw-egineering\\src\\UI_main\\asset\\free-icon-wave.png").resize((100, 30)))
 
         # 목숨 표시
         self.max_lives = 3

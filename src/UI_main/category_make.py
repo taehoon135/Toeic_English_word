@@ -10,9 +10,9 @@ def category_make(root, user_number):
     import os
     import sys
     sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  #나보다 위 디렉토리에 있음
-    from database.word_db import WordDB
+    from database.category_db import CategoryDB
 
-    word_db = WordDB()
+    category_db = CategoryDB()
 
     for widget in root.winfo_children():
             widget.destroy()  
@@ -50,8 +50,7 @@ def category_make(root, user_number):
 
         #데이터베이스에 등록
         new_category = category_name.get().strip()
-        # print(new_category + "생성")
-        if word_db.add_category(new_category):
+        if category_db.create_category(user_number, new_category):
             messagebox.showinfo("성공", "카테고리 생성 완료.")
         else:
             messagebox.showwarning("실패", "오류 발생")
