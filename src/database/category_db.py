@@ -229,15 +229,6 @@ class CategoryDB(BaseDatabase):
         except Exception as e:
             return []
 
-    # 카테고리 추가 (user_id와 함께)
-    def add_category(self, name: str, created_by: int) -> bool:
-        return self.execute(
-            """
-            INSERT INTO Category (name, user_id)
-            VALUES (?, ?)
-            """,
-            (name, created_by)
-        )
 
     # category_id로 카테고리 정보 조회
     def get_category(self, category_id: int) -> Dict:
