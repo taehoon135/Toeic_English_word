@@ -76,7 +76,10 @@ def register(root):
     def switch_to_signup():
         """로그인 UI 제거 후 회원가입 UI 표시"""
         for widget in root.winfo_children():
-            widget.destroy()  
+            widget.destroy()
+            
+        root.title("영단어 학습 프로그램")
+        root.geometry("320x400")
 
         # 뒤로가기 버튼 (오른쪽 상단)
         back_button = ttk.Button(root, text="← 뒤로", bootstyle="secondary", command=back_to_login)

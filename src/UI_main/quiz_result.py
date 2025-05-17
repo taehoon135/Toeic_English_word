@@ -13,6 +13,7 @@ def quiz_result(root, user_number, word_list, word_list_answer):
 
     # 창 크기 설정
     root.geometry("500x600")
+    root.title("결과")
 
     # 결과를 표시할 프레임 생성 및 배치
     result_frame = ttk.Frame(root)

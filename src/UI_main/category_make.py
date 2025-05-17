@@ -57,6 +57,7 @@ def category_make(root, user_number):
         back_to_category()
 
     root.geometry("320x250")
+    root.title("카테고리")
 
     # 뒤로가기 버튼 (오른쪽 상단)
     back_button = ttk.Button(root, text="뒤로가기", bootstyle="secondary", command=back_to_category)

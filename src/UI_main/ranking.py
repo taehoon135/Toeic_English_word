@@ -12,6 +12,7 @@ def ranking(root, user_number):
 
     # 창 크기 설정
     root.geometry("500x600")
+    root.title("랭킹")
 
     # '메인 메뉴' 버튼 클릭 시 실행되는 함수
     def go_to_quiz_menu():

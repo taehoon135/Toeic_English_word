@@ -23,3 +23,11 @@ def word_id_search(word_list, word_name):
             return word["id"]
         
     return -1
+
+#단어 이름으로 번호 찾기 ver2. 데이터베이스 내의 저장 방식이 word랑 word_id 두가지가 존재하는 것으로 보여 ver2를 만듦
+def word_id_search_ver2(word_list, word_name):
+    for word in word_list:
+        if word["english"] == word_name:
+            return word["word_id"]
+        
+    return -1

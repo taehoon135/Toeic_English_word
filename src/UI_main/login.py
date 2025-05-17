@@ -80,7 +80,10 @@ def sign_login(root):
 
     def switch_to_login():
         for widget in root.winfo_children():  #기존 UI들 제거
-                widget.destroy()  
+                widget.destroy()
+                
+        root.title("영단어 학습 프로그램")
+        root.geometry("320x400")
 
         # 앱 타이틀
         title_label = ttk.Label(root, text="영단어 학습 프로그램", font=("Arial", 18, "bold"), bootstyle="primary")

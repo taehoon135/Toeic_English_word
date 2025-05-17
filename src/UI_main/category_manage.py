@@ -189,6 +189,7 @@ def category_manage(root, user_number):
 
     # GUI 시작
     root.geometry("500x600")
+    root.title("카테고리")
 
     # ===== 폰트 설정 =====
     big_font = font.Font(family="맑은 고딕", size=13)

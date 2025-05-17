@@ -3,12 +3,59 @@ import random
 from PIL import Image, ImageTk
 
 class AcidRainGame:
-    def __init__(self, root, user_number):
+    def __init__(self, root, user_number, category_id_str):
+        self.user_number = user_number
+        self.category_id_str = category_id_str
+
+        from assist_module import category_id_search
+
+        import sys
+        import os
+
+        sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  #나보다 위 디렉토리에 있음
+        from database.word_db import WordDB
+        from database.category_db import CategoryDB
+        #from database.game_db import GameScoreDB
+
+        #self.game_db = GameScoreDB()
+
+        # Create db
+        import pandas as pd
+        from quiz_generation.rain_quiz import RainQuizModel
+
+        self.word_db = WordDB() #데베 클래스 생성
+
+        word_list = self.word_db.get_all_words()
+
+        if not word_list:
+            print("No words found")
+            exit()
+
+        #받은 카테고리는 str 형태이므로 카테고리 id를 찾음
+        self.category_db = CategoryDB()
+        
+        #선택된 카테고리가 전체인 경우 검색을 수행하지 않고 리스트의 모든 값을 사용해야 함
+        if (category_id_str == "전체"):
+            self.word_list_category = word_list
+        else:
+            category_id = category_id_search(user_number, category_id_str)
+
+            #카테고리에 맞게 word_list를 다시 받음
+            self.word_list_category = self.category_db.get_words_in_category(category_id)
+
+            #print(word_list_category)
+
+        # Create model -> 문제 생성기
+        model = RainQuizModel(self.word_list_category)
+
+        #튜플을 리스트로 변환
+        self.question = [list(item) for item in model]
+
         for widget in root.winfo_children():  # 기존 UI 제거
             widget.destroy()
 
         self.root = root
-        #self.root.title("산성비 게임")
+        self.root.title("산성비 게임")
         self.canvas_width = 400
         self.canvas_height = 600
 
@@ -45,17 +92,13 @@ class AcidRainGame:
         self.entry.bind("<Return>", self.check_word)
         self.entry.focus()
 
-        # 단어 관련
-        self.arr = [
-            ["apple", "사과"],
-            ["banana", "바나나"],
-            ["cloud", "구름"],
-            ["acid", "산성"],
-            ["rain", "비"],
-            ["blue", "파랑"],
-            ["clean", "깨끗한"],
-            ["smog", "스모그"]
-        ]
+        #단어의 힌트 부분 제거
+        self.question = [item[:2] for item in self.question]
+
+        #Print quiz
+        # for i in self.question:
+        #     print(i)
+
         self.active_words = []
         self.spawn_word()
 
@@ -64,17 +107,19 @@ class AcidRainGame:
     #메인 메뉴로 나감
     def go_to_menu(self):
         from menu import main_menu
-        main_menu(self.root)
+        main_menu(self.root, self.user_number)
     
     #랭킹 저장을 위한 점수 리턴
     def final_score(self):
+        #db에 점수 저장
+        #self.game_db.save_score(self.user_number, 'word_rain', self.score)
         print(self.score)
 
     def spawn_word(self):
         if self.lives <= 0:
             return  # 이미 죽었으면 더 이상 단어 생성하지 않음
 
-        eng, kor = random.choice(self.arr)
+        eng, kor = random.choice(self.question)
         x = random.randint(50, 350)
         word_id = self.canvas.create_text(x, 0, text=kor, font=("Arial", 16), fill="black")
         self.active_words.append((word_id, x, 0, eng))  # 영어 단어가 정답으로 저장됨
@@ -121,6 +166,11 @@ class AcidRainGame:
         if hasattr(self, 'after_id'):
             self.root.after_cancel(self.after_id)
 
+        # 떠 있는 단어 모두 삭제
+        for word_id, _, _, _ in self.active_words:
+            self.canvas.delete(word_id)
+        self.active_words.clear()
+
         self.canvas.create_text(200, 250, text="Game Over", font=("Arial", 30), fill="red")
         self.canvas.create_text(200, 300, text=f"최종 점수: {self.score}", font=("Arial", 20), fill="black")
     
@@ -128,4 +178,3 @@ class AcidRainGame:
 
         btn = tk.Button(self.root, text="종료", font=("Arial", 14), command=self.go_to_menu)
         self.canvas.create_window(200, 350, window=btn)
-

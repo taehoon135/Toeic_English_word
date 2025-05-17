@@ -124,39 +124,36 @@ def quiz_menu(root, user_number):
     label_display1.pack(pady=20, fill="both", expand=True)
 
     # 모드에 따라 다른 함수 실행
-    def mode_1_function():
-        quiz_interpret(root, user_number)
+    def mode_1_function(selected_category):
+        quiz_interpret(root, user_number, selected_category)
 
-    def mode_1_5_function():
-        quiz_word1(root, user_number)
+    def mode_1_5_function(selected_category):
+        quiz_word1(root, user_number, selected_category)
 
-    def mode_2_function():
-        selected_category = option_var.get()
+    def mode_2_function(selected_category):
         quiz_four_choice(root, user_number, selected_category) #선택된 카테고리로 str값임
 
-    def mode_3_function():
-        quiz_sentence(root, user_number)
+    def mode_3_function(selected_category):
+        quiz_sentence(root, user_number, selected_category)
 
-    def mode_4_function():
-        game = AcidRainGame(root, user_number)
+    def mode_4_function(selected_category):
+        game = AcidRainGame(root, user_number, selected_category)
 
     # Start 버튼 클릭 시 실행될 함수
     def start_button_clicked():
         selected_mode = mode_var.get()
         selected_category = option_var.get()
-        
-        #print(f"Start 버튼 클릭됨! 선택된 카테고리: {selected_category}, 모드: {selected_mode}")
 
         if selected_mode == "해석 맞추기":
-            mode_1_function()
+            mode_1_function(selected_category)
         elif selected_mode == "단어 맞추기":
-            mode_1_5_function()
+            mode_1_5_function(selected_category)
         elif selected_mode == "사지선다형 단어 맞추기":
-            mode_2_function()
+            mode_2_function(selected_category)
         elif selected_mode == "문장 채우기 게임":
-            mode_3_function()
+            mode_3_function(selected_category)
         elif selected_mode == "산성비 게임":
-            mode_4_function()
+            mode_4_function(selected_category)
         else:
             print("오류 발생")
 
