@@ -3,6 +3,7 @@ import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 from tkinter import messagebox
 from menu import main_menu
+import admin as ad
 
 def sign_login(root):
     from create_account import register
@@ -45,7 +46,6 @@ def sign_login(root):
 
     # 로그인
     def login_action(id, password, mode_var, root):
-        main_menu(root, 1) #임시
 
         #입력이 안된 상태 고려
         if (id.has_placeholder or id.get().strip() == ""):
@@ -66,13 +66,14 @@ def sign_login(root):
             else:
                 messagebox.showerror("오류", "ID 또는 비밀번호가 잘못되었습니다.")
 
-        elif (selected_mode == "관리자 모드"):
-            if (1):
-                print("관리자 모드에 관련된 함수 실행")
+        elif selected_mode == "관리자 모드":
+        # admin.py에 정의된 admin_info를 사용하여 인증
+            if ad.admin_info.get("ID") == id.get() and ad.admin_info.get("password") == password.get():
+                ad.admin_window(root)
             else:
                 messagebox.showerror("오류", "관리자 ID 또는 비밀번호가 잘못되었습니다.")
         else:
-            print("오류 발생 -> 일어나선 안되는 구문)")
+            messagebox.showerror("오류", "알 수 없는 모드입니다.")
         
     #회원가입 화면으로 이동
     def signup_action():
