@@ -22,7 +22,28 @@ def get_all_words() -> list:
     Returns:
         list[dict]: 전체 단어 목록
     Example:
-        words = word_db.get_all_words()
+        >>> get_all_words()
+        [
+            {
+                "word_id": 1,
+                "english": "accomplish",
+                "meaning": "달성하다",
+                "part_of_speech": "verb",
+                "example_sentence": "She accomplished all her goals.",
+                "wrong_count": 0,
+                "category_id": 1
+            },
+            {
+                "word_id": 2,
+                "english": "determine",
+                "meaning": "결정하다",
+                "part_of_speech": "verb",
+                "example_sentence": "We need to determine the best course of action.",
+                "wrong_count": 1,
+                "category_id": 2
+            }
+        ]
+    """
     """
     pass
 
