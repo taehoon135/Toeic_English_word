@@ -25,7 +25,21 @@ def get_user_categories(user_id: int) -> list:
     Returns:
         list[dict]: 해당 사용자의 카테고리 정보 리스트
     Example:
-        categories = category_db.get_user_categories(1)
+        >>> get_user_categories(1)  # 결과가 있을 때
+        [
+            {
+                "category_id": 1,
+                "category_name": "동물",
+                "word_count": 10,
+                "created_at": "2024-03-15 14:30:00"
+            },
+            {
+                "category_id": 2,
+                "category_name": "과일",
+                "word_count": 5,
+                "created_at": "2024-03-15 15:00:00"
+            }
+        ]
     """
     pass
 
@@ -88,7 +102,25 @@ def get_words_in_category(category_id: int) -> list:
     Returns:
         list[dict]: 해당 카테고리에 속한 단어 정보 리스트
     Example:
-        words = category_db.get_words_in_category(1)
+    >>> get_words_in_category(1)  # 결과가 있을 때
+        [
+            {
+                "word_id": 1,
+                "english": "apple",
+                "meaning": "사과",
+                "part_of_speech": "noun",
+                "example_sentence": "I like apples.",
+                "wrong_count": 0
+            },
+            {
+                "word_id": 2,
+                "english": "banana",
+                "meaning": "바나나",
+                "part_of_speech": "noun",
+                "example_sentence": "I like bananas.",
+                "wrong_count": 1
+            }
+        ]
     """
     pass
 
