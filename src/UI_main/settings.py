@@ -10,16 +10,21 @@ user_info = {
     "password": "1234"
 }
 
+
 def toggle_dark_mode(root):
     style = ttk.Style()
     current_theme = style.theme_use()
     new_theme = "darkly" if current_theme == "flatly" else "flatly"
     style.theme_use(new_theme)
 
-def settings_window(root):
+def settings_window(root, user_number):
     for widget in root.winfo_children():
         widget.destroy()
     root.title("설정")
+    
+    def go_to_menu():
+        from menu import main_menu
+        main_menu(root, user_number)
 
     label = ttk.Label(root, text="설정 화면", font=("Arial", 18, "bold"), bootstyle="primary")
     label.pack(pady=20)
@@ -38,8 +43,8 @@ def settings_window(root):
     logout_button = ttk.Button(root, text="로그아웃", bootstyle="warning", command=lambda: sign_login(root))  # ✅ 메인으로
     logout_button.pack(pady=10)
 
-    exit_button = ttk.Button(root, text="닫기", bootstyle="danger", command=root.destroy)
-    exit_button.pack(pady=20)
+    back_button = ttk.Button(root, text="뒤로가기", bootstyle="danger", command=go_to_menu, )
+    back_button.pack(pady=10)
 
 
 def verify_password(root):
