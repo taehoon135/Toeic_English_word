@@ -66,7 +66,7 @@ def register(root):
         #비밀번호가 일치하면 데이터베이스에 항목 추가
         #user_login_id, user_pw, user_name, is_admin=0, user_api=None
         if (password.get() == comfirm_password.get()):
-            id_num = user_db.register_user(id.get(), password.get(), name.get())
+            id_num = user_db.register_user(id.get(), password.get(), name.get(), phone_number.get())
             print(id_num, id.get(), password.get())
             messagebox.showinfo("성공", "회원가입이 완료되었습니다!")
             back_to_login()
