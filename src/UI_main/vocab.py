@@ -3,6 +3,7 @@ import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 from tkinter import ttk, messagebox, font
 from tkinter import PhotoImage
+import pyttsx3
 
 def vocab_window(root, user_number):
     from menu import main_menu
@@ -126,8 +127,13 @@ def vocab_window(root, user_number):
         selected = word_table.focus()
         data = word_table.item(selected, "values")
         #data의 1번이 word
-    
-        print(data[1])
+
+        engine = pyttsx3.init()
+        engine.setProperty('rate', 200)
+        engine.say(data[1])
+        engine.runAndWait()
+
+        #print(data[1])
 
     def go_to_category_manage():
         category_manage(root, user_number)
