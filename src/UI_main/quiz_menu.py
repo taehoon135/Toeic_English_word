@@ -3,6 +3,7 @@ import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 from PIL import Image, ImageTk
 from tkinter import Tk, Frame
+from tkinter import messagebox
 
 def quiz_menu(root, user_number):
     from quiz_interpret import quiz_interpret
@@ -12,6 +13,7 @@ def quiz_menu(root, user_number):
     from quiz_rain import AcidRainGame
     from menu import main_menu
     from ranking import ranking
+    from assist_module import category_id_search
 
     #DB연결
     import os
@@ -57,9 +59,12 @@ def quiz_menu(root, user_number):
 
     # 옵션 선택 (OptionMenu)
     category_list = category_db.get_user_categories(user_number)
-    category_only_name = [] #카테고리 이름만을 포함하는 리스트 생성
+    category_only_name = ["임시"] #카테고리 이름만을 포함하는 리스트 생성
     for category in category_list:
         category_only_name.append(category["name"])
+    #전체를 맨 앞으로 보냄
+    category_only_name.remove("전체")
+    category_only_name.insert(0, "전체")
 
     options = category_only_name
     option_var = tk.StringVar(value="전체")
@@ -134,7 +139,14 @@ def quiz_menu(root, user_number):
         quiz_four_choice(root, user_number, selected_category) #선택된 카테고리로 str값임
 
     def mode_3_function(selected_category):
-        quiz_sentence(root, user_number, selected_category)
+        #API값이 존재하는지 확인
+        from database.user_db import UserDB
+        user_db = UserDB()
+        if (user_db.get_api_key(user_number) != None):
+            quiz_sentence(root, user_number, selected_category)
+        else:
+            from tkinter import messagebox
+            messagebox.showwarning("경고", "API를 등록해주세요.")
 
     def mode_4_function(selected_category):
         game = AcidRainGame(root, user_number, selected_category)
@@ -143,6 +155,15 @@ def quiz_menu(root, user_number):
     def start_button_clicked():
         selected_mode = mode_var.get()
         selected_category = option_var.get()
+
+        #카테고리가 전체인 경우 아래 코드를 무시함
+        if (selected_category != "전체"):
+            #카테고리 내의 단어가 4개 미만인 경우를 경우를 고려
+            category_id = category_id_search(user_number, selected_category)  #카테고리 이름으로 번호 찾기
+            words_in_category = category_db.get_words_in_category(category_id)
+            if (len(words_in_category) <= 4):
+                messagebox.showwarning("경고", "카테고리 내에 단어를 추가해주세요.")
+                return
 
         if selected_mode == "해석 맞추기":
             mode_1_function(selected_category)

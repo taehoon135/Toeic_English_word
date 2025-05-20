@@ -59,31 +59,19 @@ def quiz_sentence(root1, user_number, category_id_str):
     #새로 생성한 리스트의 단어 개수만큼 정답지 생성
     word_list_answer = [0 for _ in range(len(word_list_category))]
 
+    #API값을 가져오기 위한 작업
+    from database.user_db import UserDB
+    user_db = UserDB()
+    api_key = user_db.get_api_key(user_number)
+
     # Create model -> 문제 생성기
-    model = ClozeQuizModel(word_list, "YOUR_GEMINI_API_KEY")
+    model = ClozeQuizModel(word_list_category, api_key)
 
     #튜플을 리스트로 변환
     question = [list(item) for item in model]
 
-    for i in question:
-        print(i)
-
-    #받은 문장을 정답을 제외하고 새로 구성하기
-    # def remove_word_case_insensitive(sentence, target):
-    #     words = sentence.split() #단어별로 쪼갬
-    #     filtered = [] #새로운 문장
-    #     underLine = ""
-
-    #     for word in words:
-    #         # 현재 단어와 대상 단어를 모두 소문자로 바꿔서 비교
-    #         if word.lower() != target.lower():
-    #             filtered.append(word)
-    #         else: #단어 길이만큼 _로 대체
-    #             for i in range (len(target)):
-    #                 underLine = underLine + "_"
-    #             filtered.append(underLine)
-                    
-    #     return ' '.join(filtered)
+    # for i in question:
+    #     print(i)
 
     def enter(entered_text):
         nonlocal current_index

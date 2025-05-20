@@ -155,10 +155,15 @@ def vocab_window(root, user_number):
     top_bar = ttk.Frame(root)
     top_bar.pack(fill=tk.X, pady=5, padx=10)
 
-    #카테고리 부분
-    categories_from_db = category_db.get_categories_by_user(user_number)
-    categories = [item['name'] for item in categories_from_db] #딕셔너리 값들을 특징만 추출
-    categories.insert(0, "전체") #전체 항목 삽입
+    #카테고리 생성 부분
+    category_list = category_db.get_user_categories(user_number)
+    category_only_name = ["임시"] #카테고리 이름만을 포함하는 리스트 생성
+    for category in category_list:
+        category_only_name.append(category["name"])
+    #전체를 맨 앞으로 보냄
+    category_only_name.remove("전체")
+    category_only_name.insert(0, "전체")
+    categories = category_only_name
     
     selected_category = tk.StringVar(value="전체")
     category_menu = ttk.OptionMenu(top_bar, selected_category, selected_category.get(), *categories, command=on_category_change)
