@@ -166,6 +166,17 @@ class UserDB(BaseDatabase):
             print(f"비밀번호 변경 오류: {e}")
             self.rollback()
             return False
+            
+    # user_id로 API KEY 반환
+    def get_api_key(self, user_id: int) -> Optional[str]:
+        try:
+            result = self.fetch_one("SELECT user_api FROM User WHERE user_id = ?", (user_id,))
+            if result and result.get('user_api'):
+                return result['user_api']
+            return None
+        except Exception as e:
+            print(f"API KEY 조회 오류: {e}")
+            return None
 
 # 전역 인스턴스 생성
 user_db = UserDB() 
