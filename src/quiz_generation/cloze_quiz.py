@@ -98,3 +98,10 @@ class ClozeQuizModel(BaseQuizModel):
 
         result = asyncio.get_event_loop().run_until_complete(result) 
         return [i.text for i in result]
+    
+    def validate_api_key(APIKEY: str) -> bool:
+        try:
+            response = get_response("Hello, world!", "gemini-2.0-flash", APIKEY)
+            return True
+        except Exception as e:
+            return False

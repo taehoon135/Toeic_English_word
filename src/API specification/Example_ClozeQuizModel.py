@@ -32,7 +32,12 @@ if not word_list:
 
 
 # Create model
-model = ClozeQuizModel(word_list, "YOUR_GEMINI_API_KEY")
+APIKEY = "YOUR_GEMINI_API_KEY"
+if ClozeQuizModel.validate_api_key(APIKEY):
+    model = ClozeQuizModel(word_list, APIKEY)
+else:
+    print("Invalid API key")
+    exit()
 
 # Print quiz
 for i in model:
