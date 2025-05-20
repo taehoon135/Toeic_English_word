@@ -15,9 +15,9 @@ class AcidRainGame:
         sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  #나보다 위 디렉토리에 있음
         from database.word_db import WordDB
         from database.category_db import CategoryDB
-        #from database.game_db import GameScoreDB
+        from database.game_db import GameScoreDB
 
-        #self.game_db = GameScoreDB()
+        self.game_db = GameScoreDB()
 
         # Create db
         import pandas as pd
@@ -112,7 +112,7 @@ class AcidRainGame:
     #랭킹 저장을 위한 점수 리턴
     def final_score(self):
         #db에 점수 저장
-        #self.game_db.save_score(self.user_number, 'word_rain', self.score)
+        self.game_db.save_score(self.user_number, 'word_rain', self.score)
         print(self.score)
 
     def spawn_word(self):
