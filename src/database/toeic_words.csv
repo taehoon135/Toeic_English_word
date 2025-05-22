@@ -168,4 +168,791 @@ await,기다리다,verb,We await your response.
 award,상,noun,She received an award.
 aware,알고 있는,adjective,We are aware of the problem.
 away,멀리,adverb,The office is far away.
-awkward,어색한,adjective,The situation was awkward. 
+awkward,어색한,adjective,The situation was awkward.
+calculate,계산하다,verb,Please calculate the total cost.
+calendar,달력,noun,Check the calendar for available dates.
+call,부르다,verb,Please call me tomorrow.
+calm,차분한,adjective,Stay calm during the crisis.
+campaign,캠페인,noun,The marketing campaign was successful.
+cancel,취소하다,verb,We had to cancel the meeting.
+candidate,후보자,noun,There are many qualified candidates.
+capable,능력 있는,adjective,She is capable of handling this.
+capacity,용량,noun,The room has a capacity of 100 people.
+capital,자본,noun,We need more capital to expand.
+capture,포착하다,verb,The camera captured the moment.
+career,경력,noun,She has a successful career.
+careful,조심스러운,adjective,Be careful with the documents.
+careless,부주의한,adjective,Don't be careless with details.
+carry,나르다,verb,Please carry these boxes.
+case,사례,noun,This is a special case.
+cash,현금,noun,Do you accept cash?
+cast,던지다,verb,The company cast a wide net.
+casual,일상적인,adjective,The dress code is casual.
+catch,잡다,verb,Please catch the ball.
+category,범주,noun,Choose the right category.
+cause,원인,noun,What was the cause?
+celebrate,축하하다,verb,Let's celebrate our success.
+celebration,축하,noun,The celebration was great.
+cell,세포,noun,The cell structure is complex.
+center,중심,noun,The city center is busy.
+central,중앙의,adjective,This is the central office.
+century,세기,noun,We're in the 21st century.
+ceremony,의식,noun,The ceremony was formal.
+certain,확실한,adjective,I'm certain about this.
+certificate,증명서,noun,Show your certificate.
+chain,사슬,noun,The chain of command is clear.
+chair,의자,noun,Please take a chair.
+chairman,회장,noun,The chairman will speak.
+challenge,도전,noun,This is a big challenge.
+chamber,회의실,noun,The chamber is ready.
+chance,기회,noun,This is your chance.
+change,변화,noun,We need a change.
+channel,채널,noun,Use the right channel.
+chaos,혼돈,noun,The situation caused chaos.
+chapter,장,noun,Read chapter 5.
+character,성격,noun,He has a strong character.
+charge,요금,noun,What's the charge?
+charity,자선,noun,The charity helps many.
+chart,차트,noun,Look at the chart.
+cheap,저렴한,adjective,The price is cheap.
+check,확인하다,verb,Please check the details.
+cheer,응원하다,verb,Cheer for our team.
+chemical,화학적인,adjective,This is a chemical reaction.
+chemistry,화학,noun,The chemistry is good.
+chest,가슴,noun,He has chest pain.
+chief,수장,noun,The chief will decide.
+child,아이,noun,The child is happy.
+childhood,어린 시절,noun,He had a happy childhood.
+choice,선택,noun,Make your choice.
+choose,선택하다,verb,Choose carefully.
+church,교회,noun,The church is old.
+circle,원,noun,Draw a circle.
+circuit,회로,noun,The circuit is complete.
+circular,원형의,adjective,The table is circular.
+circumstance,상황,noun,Under these circumstances.
+citizen,시민,noun,He is a good citizen.
+city,도시,noun,The city is big.
+civil,시민의,adjective,This is a civil matter.
+claim,주장하다,verb,He claims innocence.
+class,수업,noun,The class starts at 9.
+classic,고전적인,adjective,This is a classic design.
+classify,분류하다,verb,Please classify these.
+classroom,교실,noun,The classroom is clean.
+clean,깨끗한,adjective,Keep it clean.
+clear,명확한,adjective,The answer is clear.
+clerk,점원,noun,The clerk helped me.
+clever,영리한,adjective,She is very clever.
+client,고객,noun,The client is satisfied.
+climate,기후,noun,The climate is changing.
+climb,오르다,verb,Climb the mountain.
+clock,시계,noun,The clock is broken.
+close,닫다,verb,Please close the door.
+cloth,천,noun,The cloth is soft.
+clothes,옷,noun,Wash your clothes.
+cloud,구름,noun,The cloud is dark.
+club,클럽,noun,Join the club.
+clue,단서,noun,Find the clue.
+coach,코치,noun,The coach is strict.
+coal,석탄,noun,The coal is black.
+coast,해안,noun,The coast is beautiful.
+coat,코트,noun,Wear your coat.
+code,코드,noun,Enter the code.
+coffee,커피,noun,Drink your coffee.
+coin,동전,noun,The coin is old.
+cold,추운,adjective,It's cold today.
+collapse,붕괴,noun,The building collapsed.
+colleague,동료,noun,My colleague helped me.
+collect,수집하다,verb,Collect the data.
+collection,수집,noun,The collection is complete.
+college,대학,noun,The college is famous.
+color,색깔,noun,Choose a color.
+column,열,noun,Add a column.
+combine,결합하다,verb,Combine the ingredients.
+come,오다,verb,Come here.
+comfort,편안함,noun,Feel the comfort.
+comfortable,편안한,adjective,The chair is comfortable.
+command,명령,noun,Follow the command.
+comment,댓글,noun,Leave a comment.
+commerce,상거래,noun,The commerce is growing.
+commercial,상업적인,adjective,This is a commercial project.
+commission,수수료,noun,The commission is high.
+commit,약속하다,verb,Commit to the plan.
+commitment,약속,noun,Keep your commitment.
+committee,위원회,noun,The committee meets today.
+common,일반적인,adjective,This is common.
+communicate,소통하다,verb,Communicate clearly.
+communication,소통,noun,The communication is good.
+community,지역사회,noun,The community is strong.
+company,회사,noun,The company is growing.
+compare,비교하다,verb,Compare the prices.
+comparison,비교,noun,Make a comparison.
+compete,경쟁하다,verb,Compete fairly.
+competition,경쟁,noun,The competition is tough.
+competitive,경쟁적인,adjective,The market is competitive.
+competitor,경쟁자,noun,The competitor is strong.
+complain,불평하다,verb,Don't complain.
+complaint,불평,noun,Handle the complaint.
+complete,완성하다,verb,Complete the task.
+complex,복잡한,adjective,The problem is complex.
+complicated,복잡한,adjective,The system is complicated.
+component,구성요소,noun,This is a key component.
+compose,작성하다,verb,Compose a letter.
+composition,구성,noun,The composition is good.
+compound,화합물,noun,The compound is stable.
+comprehensive,포괄적인,adjective,This is a comprehensive plan.
+comprise,구성하다,verb,The team comprises experts.
+compromise,타협,noun,Reach a compromise.
+computer,컴퓨터,noun,Use the computer.
+concentrate,집중하다,verb,Concentrate on your work.
+concept,개념,noun,Understand the concept.
+concern,우려,noun,Express your concern.
+concert,콘서트,noun,The concert was great.
+conclude,결론내다,verb,Conclude the meeting.
+conclusion,결론,noun,Draw a conclusion.
+concrete,구체적인,adjective,Give concrete examples.
+condition,조건,noun,Meet the conditions.
+conduct,수행하다,verb,Conduct the research.
+conference,회의,noun,The conference starts at 9.
+confidence,자신감,noun,Show confidence.
+confident,자신 있는,adjective,Be confident.
+confirm,확인하다,verb,Confirm the details.
+conflict,갈등,noun,Resolve the conflict.
+confront,직면하다,verb,Confront the problem.
+confuse,혼란스럽게 하다,verb,Don't confuse them.
+confusion,혼란,noun,Clear the confusion.
+congratulate,축하하다,verb,Congratulate the winner.
+congratulation,축하,noun,Accept my congratulations.
+congress,의회,noun,The congress meets today.
+connect,연결하다,verb,Connect the wires.
+connection,연결,noun,The connection is good.
+consequence,결과,noun,Consider the consequences.
+consider,고려하다,verb,Consider all options.
+considerable,상당한,adjective,This is a considerable amount.
+consideration,고려,noun,Take this into consideration.
+consist,구성되다,verb,The team consists of experts.
+consistent,일관된,adjective,Be consistent.
+constant,지속적인,adjective,The pressure is constant.
+constitute,구성하다,verb,These constitute the whole.
+constraint,제약,noun,Work within constraints.
+construct,건설하다,verb,Construct the building.
+construction,건설,noun,The construction is ongoing.
+consult,상담하다,verb,Consult the expert.
+consultant,컨설턴트,noun,The consultant advised us.
+consume,소비하다,verb,Consume less energy.
+consumer,소비자,noun,The consumer is king.
+consumption,소비,noun,Reduce consumption.
+contact,연락,noun,Keep in contact.
+contain,포함하다,verb,The box contains books.
+contemporary,현대적인,adjective,This is contemporary art.
+content,내용,noun,Check the content.
+contest,대회,noun,Enter the contest.
+context,맥락,noun,Understand the context.
+continent,대륙,noun,The continent is large.
+continue,계속하다,verb,Continue the work.
+continuous,연속적인,adjective,The process is continuous.
+contract,계약,noun,Sign the contract.
+contrast,대비,noun,The contrast is clear.
+contribute,기여하다,verb,Contribute to the project.
+contribution,기여,noun,Make a contribution.
+control,통제,noun,Take control.
+controversial,논란의,adjective,This is controversial.
+convenience,편의,noun,For your convenience.
+convenient,편리한,adjective,This is convenient.
+convention,관례,noun,Follow the convention.
+conventional,전통적인,adjective,This is conventional.
+conversation,대화,noun,Have a conversation.
+convert,변환하다,verb,Convert the file.
+convince,설득하다,verb,Convince the client.
+cook,요리하다,verb,Cook the meal.
+cool,시원한,adjective,The weather is cool.
+cooperate,협력하다,verb,Cooperate with others.
+cooperation,협력,noun,The cooperation is good.
+coordinate,조정하다,verb,Coordinate the efforts.
+coordination,조정,noun,The coordination is smooth.
+coordinator,조정자,noun,The coordinator will help.
+copy,복사,noun,Make a copy.
+copyright,저작권,noun,Respect the copyright.
+core,핵심,noun,This is the core issue.
+corner,모서리,noun,Turn the corner.
+corporate,기업의,adjective,This is corporate policy.
+corporation,기업,noun,The corporation is large.
+correct,올바른,adjective,The answer is correct.
+correction,수정,noun,Make the correction.
+correspond,일치하다,verb,The data corresponds.
+correspondence,서신,noun,Keep the correspondence.
+correspondent,특파원,noun,The correspondent reported.
+corridor,복도,noun,The corridor is long.
+cost,비용,noun,The cost is high.
+cottage,별장,noun,The cottage is cozy.
+cotton,면,noun,The cotton is soft.
+cough,기침,noun,He has a cough.
+could,할 수 있었다,verb,Could you help?
+council,의회,noun,The council meets today.
+counsel,상담,noun,Seek counsel.
+count,세다,verb,Count the money.
+counter,계수기,noun,The counter shows 10.
+country,국가,noun,The country is beautiful.
+county,군,noun,The county is large.
+couple,커플,noun,The couple is happy.
+courage,용기,noun,Show courage.
+course,과정,noun,Take the course.
+court,법원,noun,The court is busy.
+cousin,사촌,noun,My cousin visited.
+cover,덮다,verb,Cover the book.
+coverage,보도,noun,The coverage is good.
+cow,소,noun,The cow is big.
+crack,균열,noun,The crack is deep.
+craft,공예,noun,The craft is beautiful.
+crash,충돌,noun,The crash was bad.
+crazy,미친,adjective,That's crazy.
+cream,크림,noun,The cream is smooth.
+create,창조하다,verb,Create something new.
+creation,창조,noun,The creation is amazing.
+creative,창의적인,adjective,Be creative.
+creature,생물,noun,The creature is strange.
+credit,신용,noun,Check your credit.
+crew,승무원,noun,The crew is ready.
+crime,범죄,noun,The crime is serious.
+criminal,범죄자,noun,The criminal was caught.
+crisis,위기,noun,The crisis is serious.
+critic,비평가,noun,The critic wrote a review.
+critical,중요한,adjective,This is critical.
+criticism,비평,noun,Accept the criticism.
+criticize,비평하다,verb,Don't criticize.
+crop,작물,noun,The crop is good.
+cross,건너다,verb,Cross the street.
+crowd,군중,noun,The crowd is large.
+crucial,결정적인,adjective,This is crucial.
+cruel,잔인한,adjective,Don't be cruel.
+cry,울다,verb,Don't cry.
+crystal,수정,noun,The crystal is clear.
+cultural,문화적인,adjective,This is cultural.
+culture,문화,noun,Respect the culture.
+cup,컵,noun,The cup is full.
+cure,치료,noun,Find a cure.
+curious,호기심 많은,adjective,Be curious.
+currency,통화,noun,The currency is strong.
+current,현재의,adjective,This is current.
+curriculum,교육과정,noun,The curriculum is good.
+curve,곡선,noun,The curve is smooth.
+custom,관습,noun,Follow the custom.
+customer,고객,noun,The customer is right.
+cut,자르다,verb,Cut the paper.
+cycle,순환,noun,The cycle continues.
+daily,일상적인,adjective,This is a daily task.
+damage,손상,noun,The damage is serious.
+dance,춤추다,verb,They danced all night.
+danger,위험,noun,There is danger ahead.
+dangerous,위험한,adjective,That is a dangerous place.
+dark,어두운,adjective,The room is dark.
+data,데이터,noun,We need more data.
+date,날짜,noun,What is today's date?
+daughter,딸,noun,His daughter is five years old.
+day,날,noun,It is a sunny day.
+dead,죽은,adjective,The battery is dead.
+deal,거래,noun,Let's make a deal.
+debate,토론,noun,The debate was interesting.
+debt,빚,noun,He is in debt.
+decade,10년,noun,A decade has passed.
+decide,결정하다,verb,Please decide quickly.
+decision,결정,noun,It was a hard decision.
+declare,선언하다,verb,He declared the results.
+decrease,감소하다,verb,Sales decreased last year.
+dedicate,헌신하다,verb,She dedicated her life to science.
+deep,깊은,adjective,The water is deep.
+defeat,패배,noun,They suffered a defeat.
+defend,방어하다,verb,Defend your opinion.
+defense,방어,noun,The defense was strong.
+deficit,적자,noun,The company has a deficit.
+define,정의하다,verb,Can you define this word?
+definite,확실한,adjective,We need a definite answer.
+definition,정의,noun,Check the definition.
+degree,학위,noun,She has a degree in law.
+delay,지연,noun,There was a delay.
+delegate,대표자,noun,He is a delegate.
+delete,삭제하다,verb,Delete this file.
+deliberate,신중한,adjective,Be deliberate in your actions.
+delicate,섬세한,adjective,The fabric is delicate.
+delight,기쁨,noun,It was a delight to see you.
+deliver,배달하다,verb,They deliver food.
+delivery,배달,noun,The delivery is late.
+demand,요구,noun,There is a high demand.
+democracy,민주주의,noun,Democracy is important.
+demonstrate,시연하다,verb,He demonstrated the product.
+deny,부인하다,verb,She denied the rumor.
+department,부서,noun,He works in the sales department.
+departure,출발,noun,The departure is at 8.
+depend,의존하다,verb,You can depend on me.
+dependent,의존적인,adjective,He is dependent on his parents.
+deposit,예금,noun,Make a deposit.
+depress,우울하게 하다,verb,Rainy days depress me.
+depression,우울증,noun,He suffers from depression.
+depth,깊이,noun,Measure the depth.
+derive,얻다,verb,We derive energy from food.
+describe,묘사하다,verb,Describe the scene.
+description,설명,noun,The description is clear.
+desert,사막,noun,The desert is hot.
+deserve,받을 자격이 있다,verb,You deserve a reward.
+design,디자인,noun,The design is modern.
+designer,디자이너,noun,She is a famous designer.
+desire,욕망,noun,He has a strong desire to win.
+desk,책상,noun,The desk is clean.
+desperate,절망적인,adjective,He is desperate for help.
+despite,에도 불구하고,preposition,Despite the rain, we went out.
+destroy,파괴하다,verb,The building was destroyed.
+detail,세부사항,noun,Check the details.
+detect,감지하다,verb,The alarm detects smoke.
+determine,결정하다,verb,We must determine the cause.
+develop,개발하다,verb,They develop new software.
+development,개발,noun,This is a new development.
+device,장치,noun,This device is useful.
+devote,바치다,verb,He devoted time to study.
+diagram,도표,noun,Look at the diagram.
+dial,다이얼,noun,Turn the dial.
+dialogue,대화,noun,The dialogue was funny.
+diamond,다이아몬드,noun,The ring has a diamond.
+diary,일기,noun,She writes a diary.
+dictate,지시하다,verb,He dictated a letter.
+dictionary,사전,noun,Use a dictionary.
+die,죽다,verb,Plants die without water.
+diet,식단,noun,He is on a diet.
+differ,다르다,verb,Opinions differ.
+difference,차이,noun,There is a big difference.
+different,다른,adjective,This is a different case.
+difficult,어려운,adjective,The test was difficult.
+difficulty,어려움,noun,He had difficulty breathing.
+dig,파다,verb,Dig a hole here.
+digital,디지털의,adjective,This is a digital camera.
+dimension,차원,noun,The box has three dimensions.
+diminish,줄어들다,verb,The pain diminished.
+dinner,저녁식사,noun,We had dinner at 7.
+diploma,졸업장,noun,She received her diploma.
+direct,직접적인,adjective,He gave a direct answer.
+direction,방향,noun,Which direction is north?
+director,감독,noun,The director is famous.
+dirt,먼지,noun,There is dirt on the floor.
+dirty,더러운,adjective,The room is dirty.
+disability,장애,noun,He has a disability.
+disagree,동의하지 않다,verb,I disagree with you.
+disappear,사라지다,verb,The sun disappeared.
+disappoint,실망시키다,verb,Don't disappoint me.
+disaster,재난,noun,The flood was a disaster.
+discipline,훈련,noun,Discipline is important.
+discount,할인,noun,There is a discount today.
+discover,발견하다,verb,They discovered a new planet.
+discovery,발견,noun,The discovery was amazing.
+discuss,토론하다,verb,Let's discuss the plan.
+discussion,토론,noun,The discussion was long.
+disease,질병,noun,He has a rare disease.
+dish,접시,noun,Wash the dishes.
+disk,디스크,noun,The disk is full.
+dismiss,해고하다,verb,He was dismissed from work.
+disorder,장애,noun,He has a sleep disorder.
+display,전시하다,verb,Display the results.
+dispose,처분하다,verb,Dispose of waste properly.
+dispute,분쟁,noun,The dispute was resolved.
+distance,거리,noun,The distance is short.
+distant,먼,adjective,The mountain is distant.
+distinct,뚜렷한,adjective,There is a distinct smell.
+distinguish,구별하다,verb,Can you distinguish them?
+distribute,분배하다,verb,Distribute the papers.
+distribution,분배,noun,Distribution is fair.
+district,지구,noun,He lives in this district.
+disturb,방해하다,verb,Don't disturb the class.
+dive,다이빙하다,verb,He dived into the pool.
+diverse,다양한,adjective,The city is diverse.
+divide,나누다,verb,Divide the cake.
+division,분할,noun,The division is equal.
+divorce,이혼,noun,They got a divorce.
+do,하다,verb,Do your best.
+doctor,의사,noun,The doctor is kind.
+document,문서,noun,Read the document.
+dog,개,noun,The dog barked loudly.
+dollar,달러,noun,It costs ten dollars.
+domestic,국내의,adjective,Domestic flights are cheaper.
+dominant,지배적인,adjective,He is the dominant player.
+dominate,지배하다,verb,They dominate the market.
+door,문,noun,Open the door.
+double,이중의,adjective,Double the amount.
+doubt,의심,noun,There is no doubt.
+down,아래로,adverb,Go down the stairs.
+download,다운로드하다,verb,Download the app.
+dozen,12개,noun,A dozen eggs.
+draft,초안,noun,Write a draft.
+drag,끌다,verb,Drag the file here.
+drama,드라마,noun,She likes drama.
+dramatic,극적인,adjective,The ending was dramatic.
+draw,그리다,verb,Draw a picture.
+drawer,서랍,noun,Open the drawer.
+dream,꿈,noun,He had a strange dream.
+dress,드레스,noun,She wore a red dress.
+drink,마시다,verb,Drink some water.
+drive,운전하다,verb,Drive carefully.
+driver,운전자,noun,The driver is tired.
+drop,떨어뜨리다,verb,Don't drop the glass.
+drug,약,noun,Take the drug.
+dry,마른,adjective,The towel is dry.
+due,만기의,adjective,The payment is due.
+dull,지루한,adjective,The movie was dull.
+during,동안,preposition,During the meeting.
+dust,먼지,noun,There is dust everywhere.
+duty,의무,noun,It is your duty.
+dynamic,역동적인,adjective,This is dynamic.
+eager,열망하는,adjective,She is eager to learn.
+early,일찍,adverb,He arrived early.
+earn,벌다,verb,She earns a good salary.
+earth,지구,noun,The earth is round.
+ease,완화하다,verb,This medicine will ease your pain.
+easily,쉽게,adverb,She solved the problem easily.
+east,동쪽,noun,The sun rises in the east.
+easy,쉬운,adjective,This question is easy.
+eat,먹다,verb,Let's eat lunch.
+economic,경제의,adjective,The economic situation is improving.
+economy,경제,noun,The economy is growing.
+educate,교육하다,verb,We must educate children.
+education,교육,noun,Education is important.
+educational,교육적인,adjective,This is an educational program.
+effect,효과,noun,The effect was immediate.
+effective,효과적인,adjective,This is an effective method.
+efficiency,효율,noun,Efficiency is key.
+efficient,효율적인,adjective,He is an efficient worker.
+effort,노력,noun,She made an effort.
+either,어느 한 쪽,adjective,You can choose either option.
+elder,연장자,noun,Respect your elders.
+electric,전기의,adjective,This is an electric car.
+electrical,전기의,adjective,Electrical safety is important.
+electricity,전기,noun,Electricity is expensive.
+electronic,전자적인,adjective,He bought an electronic device.
+elegant,우아한,adjective,She wore an elegant dress.
+element,요소,noun,Water is an element.
+elevator,엘리베이터,noun,Take the elevator.
+eliminate,제거하다,verb,Eliminate the risk.
+elite,엘리트,noun,He is part of the elite.
+else,다른,adjective,Someone else called you.
+elsewhere,다른 곳에,adverb,Look elsewhere.
+email,이메일,noun,Send me an email.
+emerge,나타나다,verb,A problem emerged.
+emergency,비상사태,noun,Call in an emergency.
+emotion,감정,noun,He showed no emotion.
+emotional,감정적인,adjective,She is very emotional.
+emphasize,강조하다,verb,Emphasize your point.
+employ,고용하다,verb,The company employs 100 people.
+employee,직원,noun,She is an employee.
+employer,고용주,noun,The employer is generous.
+employment,고용,noun,He is looking for employment.
+enable,가능하게 하다,verb,This will enable us to win.
+enclose,동봉하다,verb,Please enclose your resume.
+encounter,마주치다,verb,We encountered a problem.
+encourage,격려하다,verb,Encourage your friends.
+end,끝,noun,This is the end.
+endless,끝없는,adjective,The road is endless.
+endorse,지지하다,verb,He endorsed the plan.
+enemy,적,noun,He is our enemy.
+energy,에너지,noun,Save energy.
+enforce,시행하다,verb,Enforce the rules.
+engage,참여하다,verb,Engage in the discussion.
+engine,엔진,noun,The engine is broken.
+engineer,엔지니어,noun,He is an engineer.
+engineering,공학,noun,She studies engineering.
+enhance,향상시키다,verb,Enhance your skills.
+enjoy,즐기다,verb,Enjoy your meal.
+enormous,거대한,adjective,The building is enormous.
+enough,충분한,adjective,We have enough food.
+enquire,묻다,verb,May I enquire your name?
+enrich,풍요롭게 하다,verb,Travel enriches your life.
+ensure,보장하다,verb,Ensure your safety.
+enter,들어가다,verb,Enter the room.
+enterprise,기업,noun,He runs a small enterprise.
+entertain,즐겁게 하다,verb,The show entertained us.
+entertainment,오락,noun,We need more entertainment.
+enthusiasm,열정,noun,He has great enthusiasm.
+enthusiastic,열정적인,adjective,She is enthusiastic about music.
+entire,전체의,adjective,The entire class passed.
+entrance,입구,noun,Where is the entrance?
+entry,입장,noun,Entry is free.
+envelope,봉투,noun,Put the letter in an envelope.
+environment,환경,noun,Protect the environment.
+envy,부러움,noun,He felt envy.
+equal,동등한,adjective,All people are equal.
+equation,방정식,noun,Solve the equation.
+equip,장비를 갖추다,verb,Equip the team.
+equipment,장비,noun,The equipment is new.
+equivalent,동등한,adjective,This is equivalent to that.
+erase,지우다,verb,Erase the board.
+erode,침식하다,verb,The river eroded the land.
+error,오류,noun,There was an error.
+escape,탈출하다,verb,They escaped the fire.
+especially,특히,adverb,She likes fruit, especially apples.
+essay,수필,noun,Write an essay.
+essential,필수적인,adjective,Water is essential.
+establish,설립하다,verb,They established a company.
+estate,재산,noun,He owns a large estate.
+estimate,추정하다,verb,Estimate the cost.
+eternal,영원한,adjective,Love is eternal.
+ether,저의,adjective,The nether world is mysterious.
+ettle,쐐기풀,noun,Be careful of nettles.
+network,네트워크,noun,The network is down.
+nevertheless,그럼에도 불구하고,adverb,Nevertheless, we tried.
+new,새로운,adjective,This is a new idea.
+news,뉴스,noun,I heard the news.
+newspaper,신문,noun,Read the newspaper.
+next,다음의,adjective,The next train is at 5.
+nice,좋은,adjective,She is a nice person.
+night,밤,noun,It is night now.
+nine,아홉,num,There are nine students.
+no,아니오,adverb,No, thank you.
+noise,소음,noun,There is a lot of noise.
+none,아무도,pronoun,None of them came.
+normal,정상적인,adjective,This is normal.
+north,북쪽,noun,Go north.
+nose,코,noun,My nose is itchy.
+not,아닌,adverb,He is not here.
+note,메모,noun,Leave a note.
+notice,공지,noun,Read the notice.
+notion,개념,noun,The notion is new.
+novel,소설,noun,She wrote a novel.
+now,지금,adverb,Do it now.
+nowhere,아무데도,adverb,He is nowhere to be found.
+number,숫자,noun,What is your number?
+nurse,간호사,noun,The nurse is kind.
+nut,견과류,noun,Eat some nuts.
+nutrient,영양소,noun,Milk is a good nutrient.
+nutrition,영양,noun,Good nutrition is important.
+face,얼굴,noun,She washed her face.
+facility,시설,noun,The facility is new.
+fact,사실,noun,It is a known fact.
+factor,요인,noun,Many factors affect the result.
+factory,공장,noun,He works in a factory.
+faculty,교수진,noun,The faculty meeting is at noon.
+fade,사라지다,verb,The color faded.
+failure,실패,noun,He learned from failure.
+fair,공정한,adjective,The decision was fair.
+fairly,공정하게,adverb,She was treated fairly.
+faith,신념,noun,He has faith in his team.
+faithful,충실한,adjective,She is a faithful friend.
+fall,떨어지다,verb,The leaves fall in autumn.
+false,거짓의,adjective,The statement is false.
+fame,명성,noun,He achieved fame.
+familiar,익숙한,adjective,The place looks familiar.
+family,가족,noun,My family is important to me.
+famous,유명한,adjective,He is a famous actor.
+fancy,화려한,adjective,She wore a fancy dress.
+fantasy,환상,noun,He lives in a fantasy world.
+far,먼,adjective,The school is far from here.
+fare,요금,noun,The bus fare is cheap.
+farm,농장,noun,They own a farm.
+farmer,농부,noun,The farmer grows rice.
+fascinate,매료시키다,verb,The story fascinated me.
+fashion,패션,noun,She studies fashion.
+fast,빠른,adjective,He is a fast runner.
+fasten,묶다,verb,Fasten your seatbelt.
+fat,지방,noun,This food is low in fat.
+fatal,치명적인,adjective,It was a fatal accident.
+fate,운명,noun,He believes in fate.
+father,아버지,noun,His father is a doctor.
+fault,결점,noun,It was my fault.
+favor,호의,noun,Do me a favor.
+favorite,가장 좋아하는,adjective,This is my favorite book.
+fear,두려움,noun,He has a fear of heights.
+feature,특징,noun,This phone has many features.
+february,2월,noun,February is cold.
+fee,수수료,noun,The fee is high.
+feed,먹이다,verb,Feed the dog.
+feedback,피드백,noun,We need your feedback.
+feel,느끼다,verb,How do you feel?
+feeling,감정,noun,She has strong feelings.
+fellow,동료,noun,He is my fellow worker.
+female,여성,noun,The female won the race.
+fence,울타리,noun,The fence is broken.
+festival,축제,noun,The festival was fun.
+fetch,가져오다,verb,Please fetch some water.
+few,몇몇,adjective,A few people came.
+fiber,섬유,noun,Cotton is a natural fiber.
+fierce,사나운,adjective,The competition is fierce.
+file,파일,noun,Open the file.
+fill,채우다,verb,Fill the glass with water.
+film,영화,noun,We watched a film.
+filter,필터,noun,Change the air filter.
+final,최종의,adjective,This is the final exam.
+finance,재정,noun,He works in finance.
+financial,재정적인,adjective,Financial planning is important.
+find,찾다,verb,Find your keys.
+fine,좋은,adjective,The weather is fine.
+finger,손가락,noun,He cut his finger.
+finish,끝내다,verb,Finish your homework.
+fire,불,noun,There is a fire in the building.
+firm,확고한,adjective,She has a firm belief.
+first,첫 번째의,adjective,This is my first job.
+fiscal,재정의,adjective,The fiscal year ends in March.
+fisherman,어부,noun,The fisherman caught a fish.
+fishing,낚시,noun,He enjoys fishing.
+fit,적합한,adjective,The shoes fit well.
+five,다섯,num,There are five apples.
+fix,고치다,verb,Fix the car.
+flag,깃발,noun,Raise the flag.
+flame,불꽃,noun,The flame is bright.
+flash,번쩍임,noun,There was a flash of light.
+flat,평평한,adjective,The road is flat.
+flee,도망치다,verb,They tried to flee.
+fleet,함대,noun,The fleet is large.
+flesh,살,noun,The flesh is soft.
+flew,날았다,verb,The bird flew away.
+flexible,유연한,adjective,She is flexible.
+flight,비행,noun,The flight was delayed.
+floor,바닥,noun,Clean the floor.
+flour,밀가루,noun,We need more flour.
+flow,흐르다,verb,The river flows fast.
+flower,꽃,noun,The flower is beautiful.
+fluid,유체,noun,Water is a fluid.
+fly,날다,verb,Birds can fly.
+focus,집중하다,verb,Focus on your work.
+fold,접다,verb,Fold the paper.
+folk,사람들,noun,Folk music is popular.
+follow,따르다,verb,Follow the rules.
+food,음식,noun,The food is delicious.
+fool,바보,noun,Don't be a fool.
+foot,발,noun,My foot hurts.
+football,축구,noun,He plays football.
+for,~을 위해,preposition,This is for you.
+force,힘,noun,Use more force.
+forecast,예보,noun,The weather forecast is good.
+foreign,외국의,adjective,He speaks a foreign language.
+forest,숲,noun,The forest is dense.
+forever,영원히,adverb,I will love you forever.
+forget,잊다,verb,Don't forget your keys.
+forgive,용서하다,verb,Please forgive me.
+form,형태,noun,Fill out the form.
+formal,공식적인,adjective,This is a formal event.
+format,형식,noun,The format is wrong.
+formation,형성,noun,Cloud formation is interesting.
+former,이전의,adjective,He is a former teacher.
+formula,공식,noun,This is a simple formula.
+forth,앞으로,adverb,Go forth and succeed.
+fortunate,운이 좋은,adjective,She is fortunate.
+fortune,운,noun,He made a fortune.
+forward,앞으로,adverb,Move forward.
+found,설립하다,verb,They founded a company.
+foundation,기초,noun,Education is the foundation.
+fountain,분수,noun,The fountain is beautiful.
+four,넷,num,There are four chairs.
+frame,틀,noun,The frame is made of wood.
+frank,솔직한,adjective,Be frank with me.
+free,자유로운,adjective,The service is free.
+freedom,자유,noun,Freedom is important.
+freeze,얼다,verb,The lake froze last night.
+fresh,신선한,adjective,The bread is fresh.
+friendly,친절한,adjective,She is friendly.
+friends,친구들,noun,They are good friends.
+frighten,겁주다,verb,The noise frightened the child.
+frog,개구리,noun,The frog jumped.
+from,~로부터,preposition,He is from Korea.
+front,앞,noun,Stand in front.
+frost,서리,noun,There is frost on the grass.
+frown,찡그리다,verb,He frowned at the news.
+fruit,과일,noun,She likes fruit.
+frustrate,좌절시키다,verb,The delay frustrated him.
+fuel,연료,noun,The car needs fuel.
+fulfill,이행하다,verb,Fulfill your promise.
+full,가득한,adjective,The glass is full.
+function,기능,noun,This function is useful.
+fund,기금,noun,They raised a fund.
+fundamental,근본적인,adjective,This is a fundamental issue.
+funny,웃긴,adjective,The movie was funny.
+furniture,가구,noun,The furniture is new.
+further,더,adverb,We need further information.
+future,미래,noun,Think about the future.
+gain,얻다,verb,Gain experience.
+galaxy,은하,noun,The galaxy is vast.
+gallery,미술관,noun,Visit the art gallery.
+game,게임,noun,Let's play a game.
+gap,틈,noun,There is a gap in the wall.
+garage,차고,noun,The car is in the garage.
+garden,정원,noun,The garden is beautiful.
+garlic,마늘,noun,Add garlic to the dish.
+gas,가스,noun,The gas is leaking.
+gate,문,noun,Close the gate.
+gather,모으다,verb,Gather information.
+gaze,응시하다,verb,She gazed at the stars.
+gear,장비,noun,Put on your gear.
+general,일반적인,adjective,This is a general rule.
+generally,일반적으로,adverb,It is generally true.
+generate,생성하다,verb,Generate a report.
+generation,세대,noun,This is a new generation.
+generous,관대한,adjective,He is generous.
+genius,천재,noun,She is a genius.
+gentle,부드러운,adjective,Be gentle with the baby.
+gently,부드럽게,adverb,Close the door gently.
+genuine,진짜의,adjective,This is genuine leather.
+geography,지리,noun,He studies geography.
+geological,지질학의,adjective,Geological research is important.
+geology,지질학,noun,She teaches geology.
+ger,노인,noun,The ger is respected.
+gesture,제스처,noun,He made a gesture.
+get,얻다,verb,Get some rest.
+giant,거대한,adjective,The giant panda is rare.
+gift,선물,noun,She gave me a gift.
+gigantic,거대한,adjective,The building is gigantic.
+girl,소녀,noun,The girl is singing.
+give,주다,verb,Give me your hand.
+glad,기쁜,adjective,I'm glad to see you.
+glance,흘끗 봄,noun,Take a glance at this.
+glass,유리,noun,The glass is broken.
+glide,미끄러지다,verb,The bird glided.
+glimpse,흘끗 봄,noun,He caught a glimpse of her.
+globe,지구본,noun,Spin the globe.
+glorious,영광스러운,adjective,It was a glorious day.
+glory,영광,noun,He won glory.
+glove,장갑,noun,Wear your gloves.
+glow,빛나다,verb,The lamp glows.
+glue,풀,noun,Use glue for this.
+go,가다,verb,Let's go now.
+goal,목표,noun,Set a goal.
+god,신,noun,They believe in God.
+gold,금,noun,The ring is gold.
+golden,황금의,adjective,This is a golden opportunity.
+golf,골프,noun,He plays golf.
+good,좋은,adjective,She is a good student.
+goods,상품,noun,The goods are expensive.
+govern,통치하다,verb,They govern the country.
+government,정부,noun,The government announced it.
+governor,주지사,noun,The governor spoke.
+gown,가운,noun,She wore a gown.
+grab,잡다,verb,Grab my hand.
+grace,우아함,noun,She moves with grace.
+grade,성적,noun,He got a good grade.
+gradual,점진적인,adjective,The change was gradual.
+gradually,점차,adverb,It improved gradually.
+grain,곡물,noun,Wheat is a grain.
+gram,그램,noun,This weighs 10 grams.
+grammar,문법,noun,Study English grammar.
+grand,웅장한,adjective,The hotel is grand.
+grandfather,할아버지,noun,My grandfather is 80.
+grandmother,할머니,noun,My grandmother is kind.
+grant,허가하다,verb,They granted permission.
+grape,포도,noun,He ate a grape.
+graph,그래프,noun,Draw a graph.
+grasp,붙잡다,verb,Grasp the rope.
+grateful,감사하는,adjective,She is grateful for help.
+gratitude,감사,noun,He expressed gratitude.
+gray,회색의,adjective,The sky is gray.
+great,위대한,adjective,He is a great leader.
+green,초록색의,adjective,The grass is green.
+greet,인사하다,verb,Greet the guests.
+grey,회색의,adjective,The cat is grey.
+grief,슬픔,noun,He felt grief.
+grocery,식료품,noun,Buy groceries.
+ground,땅,noun,The ground is wet.
+group,그룹,noun,They formed a group.
+grow,자라다,verb,Plants grow fast.
+growth,성장,noun,The company shows growth.
+guard,경비원,noun,The guard is alert.
+guess,추측하다,verb,Guess the answer.
+guest,손님,noun,The guest arrived.
+guide,안내하다,verb,Guide the tourists.
+guilty,유죄의,adjective,He felt guilty.
+guitar,기타,noun,He plays the guitar.
+gun,총,noun,The gun is loaded.
+guy,남자,noun,He is a nice guy.
+gym,체육관,noun,She goes to the gym.
+gymnast,체조선수,noun,The gymnast won gold.
+gypsum,석고,noun,Gypsum is used in construction. 
