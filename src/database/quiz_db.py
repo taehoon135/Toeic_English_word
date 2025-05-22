@@ -1,9 +1,12 @@
 from typing import Dict, List, Optional, Tuple
-from .base_db import BaseDatabase
+from .base_db import BaseDatabase, DB_PATH
 import random
 
 class QuizDB(BaseDatabase):
-    # 퀴즈 및 퀴즈 문제 테이블 생성 및 초기화
+    def __init__(self, db_path: str = DB_PATH):
+        super().__init__(db_path)
+        self.initialize_tables()
+
     def initialize_tables(self):
         self.execute("DROP TABLE IF EXISTS quiz")
         self.execute("DROP TABLE IF EXISTS quiz_question")
@@ -24,101 +27,91 @@ class QuizDB(BaseDatabase):
             correct_answer TEXT NOT NULL,
             options TEXT,
             hint TEXT,
-            FOREIGN KEY (quiz_id) REFERENCES quiz(quiz_id)
+            word_id INTEGER,
+            FOREIGN KEY (quiz_id) REFERENCES quiz(quiz_id),
+            FOREIGN KEY (word_id) REFERENCES Word(word_id)
         )
         """)
         self.commit()
 
-    # 퀴즈 생성 (핵심 기능)
     def create_quiz(self, quiz_type: str, category_id: Optional[int] = None) -> int:
-        self.execute(
-            "INSERT INTO quiz (quiz_type, category_id) VALUES (?, ?)",
-            (quiz_type, category_id)
-        )
-        self.commit()
-        return self.cursor.lastrowid
+        """
+        새로운 퀴즈를 생성합니다.
+        Args:
+            quiz_type: 퀴즈 타입 ('short_answer_ek', 'short_answer_ke', 'cloze', 'four_choice', 'rain')
+            category_id: 선택된 카테고리 ID (선택사항)
+        Returns:
+            int: 생성된 퀴즈 ID
+        """
+        try:
+            self.execute(
+                "INSERT INTO quiz (quiz_type, category_id) VALUES (?, ?)",
+                (quiz_type, category_id)
+            )
+            self.commit()
+            return self.cursor.lastrowid
+        except Exception as e:
+            print(f"퀴즈 생성 오류: {e}")
+            self.rollback()
+            return None
 
-    # 퀴즈에 문제 추가 (핵심 기능)
     def add_quiz_question(self, quiz_id: int, question: str, correct_answer: str, 
-                         options: Optional[str] = None, hint: Optional[str] = None) -> int:
-        self.execute(
-            """
-            INSERT INTO quiz_question (quiz_id, question, correct_answer, options, hint)
-            VALUES (?, ?, ?, ?, ?)
-            """,
-            (quiz_id, question, correct_answer, options, hint)
-        )
-        self.commit()
-        return self.cursor.lastrowid
-
-    # 퀴즈 상세 정보(문제 포함) 조회
-    def get_quiz(self, quiz_id: int) -> Dict:
-        quiz = self.fetch_one("SELECT * FROM quiz WHERE quiz_id = ?", (quiz_id,))
-        if quiz:
-            questions = self.fetch_all(
-                "SELECT * FROM quiz_question WHERE quiz_id = ?",
-                (quiz_id,)
-            )
-            quiz['questions'] = questions
-        return quiz
-
-    # 카테고리별 퀴즈 목록 조회
-    def get_quizzes_by_category(self, category_id: int) -> List[Dict]:
-        quizzes = self.fetch_all(
-            "SELECT * FROM quiz WHERE category_id = ?",
-            (category_id,)
-        )
-        for quiz in quizzes:
-            questions = self.fetch_all(
-                "SELECT * FROM quiz_question WHERE quiz_id = ?",
-                (quiz['quiz_id'],)
-            )
-            quiz['questions'] = questions
-        return quizzes
-
-    # 퀴즈용 랜덤 단어 목록 조회
-    def get_random_words_for_quiz(self, count: int = 10, category_id: Optional[int] = None) -> List[Dict]:
-        if category_id:
-            return self.fetch_all(
+                         options: Optional[str] = None, hint: Optional[str] = None,
+                         word_id: Optional[int] = None) -> int:
+        """
+        퀴즈에 문제를 추가합니다.
+        Args:
+            quiz_id: 퀴즈 ID
+            question: 문제 내용
+            correct_answer: 정답
+            options: 선택지 (4지선다형의 경우)
+            hint: 힌트
+            word_id: 관련 단어 ID
+        Returns:
+            int: 생성된 문제 ID
+        """
+        try:
+            self.execute(
                 """
-                SELECT w.*, c.name as category_name
-                FROM Word w
-                LEFT JOIN Category c ON w.category_id = c.category_id
-                WHERE w.category_id = ?
-                ORDER BY RANDOM()
-                LIMIT ?
+                INSERT INTO quiz_question 
+                (quiz_id, question, correct_answer, options, hint, word_id)
+                VALUES (?, ?, ?, ?, ?, ?)
                 """,
-                (category_id, count)
+                (quiz_id, question, correct_answer, options, hint, word_id)
             )
-        else:
-            return self.fetch_all(
-                """
-                SELECT w.*, c.name as category_name
-                FROM Word w
-                LEFT JOIN Category c ON w.category_id = c.category_id
-                ORDER BY RANDOM()
-                LIMIT ?
-                """,
-                (count,)
-            )
+            self.commit()
+            return self.cursor.lastrowid
+        except Exception as e:
+            print(f"문제 추가 오류: {e}")
+            self.rollback()
+            return None
 
-    # 난이도별 단어 목록 조회 (wrong_count 기준)
-    def get_words_by_difficulty(self, difficulty_level: int, count: int = 10) -> List[Dict]:
-        return self.fetch_all(
-            """
+    def get_random_words_for_quiz(self, count: int = 5, category_id: Optional[int] = None) -> List[Dict]:
+        """
+        퀴즈용 랜덤 단어 목록을 조회합니다.
+        """
+        query = """
             SELECT w.*, c.name as category_name
             FROM Word w
             LEFT JOIN Category c ON w.category_id = c.category_id
-            WHERE w.wrong_count >= ?
-            ORDER BY RANDOM()
-            LIMIT ?
-            """,
-            (difficulty_level, count)
-        )
+        """
+        params = []
+        
+        if category_id:
+            query += " WHERE w.category_id = ?"
+            params.append(category_id)
+            
+        query += " ORDER BY RANDOM() LIMIT ?"
+        params.append(count)
+        
+        return self.fetch_all(query, tuple(params))
 
-    # 퀴즈 결과 기록 (핵심 기능)
     def record_quiz_result(self, user_id: int, word_id: int, is_correct: bool) -> bool:
+        """
+        퀴즈 결과를 기록합니다.
+        """
         try:
+            # 퀴즈 결과 기록
             self.execute(
                 """
                 INSERT INTO WordHistory (
@@ -127,67 +120,20 @@ class QuizDB(BaseDatabase):
                 """,
                 (user_id, word_id, 1 if is_correct else 0)
             )
+            
+            # 틀린 경우 wrong_count 증가
             if not is_correct:
                 self.execute(
-                    """
-                    UPDATE Word
-                    SET wrong_count = wrong_count + 1
-                    WHERE word_id = ?
-                    """,
+                    "UPDATE Word SET wrong_count = wrong_count + 1 WHERE word_id = ?",
                     (word_id,)
                 )
+                
+            self.commit()
             return True
         except Exception as e:
+            print(f"퀴즈 결과 기록 오류: {e}")
+            self.rollback()
             return False
 
-    # 사용자별 퀴즈 이력 조회
-    def get_user_quiz_history(self, user_id: int, limit: int = 50) -> List[Dict]:
-        return self.fetch_all(
-            """
-            SELECT h.*, w.word, w.meaning, w.part_of_speech
-            FROM WordHistory h
-            JOIN Word w ON h.word_id = w.word_id
-            WHERE h.user_id = ? AND h.study_type = 'quiz'
-            ORDER BY h.studied_at DESC
-            LIMIT ?
-            """,
-            (user_id, limit)
-        )
-
-    # 사용자 취약 단어 목록 조회
-    def get_user_weak_words(self, user_id: int, limit: int = 10) -> List[Dict]:
-        return self.fetch_all(
-            """
-            SELECT w.*, 
-                   COUNT(CASE WHEN h.is_correct = 0 THEN 1 END) as wrong_count,
-                   COUNT(h.history_id) as total_attempts,
-                   CAST(COUNT(CASE WHEN h.is_correct = 1 THEN 1 END) AS FLOAT) / 
-                   COUNT(h.history_id) * 100 as accuracy_rate
-            FROM Word w
-            JOIN WordHistory h ON w.word_id = h.word_id
-            WHERE h.user_id = ? AND h.study_type = 'quiz'
-            GROUP BY w.word_id
-            HAVING accuracy_rate < 70
-            ORDER BY accuracy_rate ASC
-            LIMIT ?
-            """,
-            (user_id, limit)
-        )
-
-    # 사용자 퀴즈 통계 조회
-    def get_quiz_statistics(self, user_id: int) -> Dict:
-        return self.fetch_one(
-            """
-            SELECT 
-                COUNT(DISTINCT h.word_id) as total_words_studied,
-                COUNT(h.history_id) as total_attempts,
-                COUNT(CASE WHEN h.is_correct = 1 THEN 1 END) as correct_answers,
-                CAST(COUNT(CASE WHEN h.is_correct = 1 THEN 1 END) AS FLOAT) / 
-                COUNT(h.history_id) * 100 as overall_accuracy
-            FROM WordHistory h
-            WHERE h.user_id = ? AND h.study_type = 'quiz'
-            """,
-            (user_id,)
-        )
-
+# 모듈 레벨에서 인스턴스 생성
 quiz_db = QuizDB() 
