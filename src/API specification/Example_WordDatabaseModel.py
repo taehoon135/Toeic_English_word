@@ -1,213 +1,106 @@
-"""
-WordDB API 명세서 (실제 구현 기준)
+from typing import List, Dict, Optional
+from database.word_db import word_db
 
-- 단어 추가, 수정, 삭제, 검색, 카테고리 관리 등 단어장 관련 DB 함수 명세
-"""
+class Example_WordDatabaseModel:
+    """
+    단어 데이터베이스 모델
+    
+    이 클래스는 단어 관련 데이터베이스 작업을 처리합니다.
+    실제 사용되는 핵심 기능만 포함되어 있습니다.
+    """
+    
+    def __init__(self):
+        """
+        단어 데이터베이스 모델 초기화
+        """
+        self.word_db = word_db
 
-# CSV 파일에서 단어 데이터 임포트
-def import_from_csv(csv_path: str) -> bool:
-    """
-    Args:
-        csv_path (str): CSV 파일 경로
-    Returns:
-        bool: 성공 여부
-    Example:
-        success = word_db.import_from_csv('word_list.csv')
-    """
-    pass
+    def get_all_words(self) -> List[Dict]:
+        """
+        모든 단어 목록을 조회합니다.
+        
+        Returns:
+            List[Dict]: 단어 정보를 담은 딕셔너리 리스트
+                각 딕셔너리는 다음 키를 포함합니다:
+                - word_id: 단어 ID
+                - english: 영어 단어
+                - meaning: 한글 의미
+                - part_of_speech: 품사
+                - example_sentence: 예문
+                - wrong_count: 틀린 횟수
+        """
+        return self.word_db.get_all_words()
 
-# 전체 단어 목록 조회
-def get_all_words() -> list:
-    """
-    Returns:
-        list[dict]: 전체 단어 목록
-    Example:
-        >>> get_all_words()
-        [
-            {
-                "word_id": 1,
-                "english": "accomplish",
-                "meaning": "달성하다",
-                "part_of_speech": "verb",
-                "example_sentence": "She accomplished all her goals.",
-                "wrong_count": 0,
-                "category_id": 1
-            },
-            {
-                "word_id": 2,
-                "english": "determine",
-                "meaning": "결정하다",
-                "part_of_speech": "verb",
-                "example_sentence": "We need to determine the best course of action.",
-                "wrong_count": 1,
-                "category_id": 2
-            }
-        ]
-    """
-    """
-    pass
+    def search_words(self, keyword: str) -> List[Dict]:
+        """
+        단어를 검색합니다 (영어/한글).
+        
+        Args:
+            keyword (str): 검색어
+        
+        Returns:
+            List[Dict]: 검색된 단어 목록
+                각 딕셔너리는 다음 키를 포함합니다:
+                - word_id: 단어 ID
+                - english: 영어 단어
+                - meaning: 한글 의미
+                - part_of_speech: 품사
+                - example_sentence: 예문
+                - wrong_count: 틀린 횟수
+        """
+        return self.word_db.search_words(keyword)
 
-# 카테고리별 단어 목록 조회
-def get_words_by_category(category_id: int) -> list:
-    """
-    Args:
-        category_id (int): 카테고리 PK
-    Returns:
-        list[dict]: 카테고리별 단어 목록
-    Example:
-        words = word_db.get_words_by_category(1)
-    """
-    pass
+    def add_word(self, english: str, meaning: str, part_of_speech: str = None, example_sentence: str = None) -> int:
+        """
+        새로운 단어를 추가합니다.
+        
+        Args:
+            english (str): 영어 단어
+            meaning (str): 한글 의미
+            part_of_speech (str, optional): 품사
+            example_sentence (str, optional): 예문
+        
+        Returns:
+            int: 추가된 단어의 ID (실패 시 None)
+        """
+        return self.word_db.add_word(english, meaning, part_of_speech, example_sentence)
 
-# 단어 상세 정보 조회
-def get_word_details(word_id: int) -> dict:
-    """
-    Args:
-        word_id (int): 단어 PK
-    Returns:
-        dict: 단어 상세 정보
-    Example:
-        word = word_db.get_word_details(1)
-    """
-    pass
+    def update_word(self, word_id: int, word: str, meaning: str, part_of_speech: str, example: str) -> bool:
+        """
+        단어 정보를 수정합니다.
+        
+        Args:
+            word_id (int): 수정할 단어 ID
+            word (str): 영어 단어
+            meaning (str): 한글 의미
+            part_of_speech (str): 품사
+            example (str): 예문
+        
+        Returns:
+            bool: 수정 성공 여부
+        """
+        return self.word_db.update_word(word_id, word, meaning, part_of_speech, example)
 
-# 오답 횟수 증가
-def update_wrong_count(word_id: int) -> bool:
-    """
-    Args:
-        word_id (int): 단어 PK
-    Returns:
-        bool: 성공 여부
-    Example:
-        success = word_db.update_wrong_count(1)
-    """
-    pass
+    def delete_word(self, word_id: int) -> bool:
+        """
+        단어를 삭제합니다.
+        
+        Args:
+            word_id (int): 삭제할 단어 ID
+        
+        Returns:
+            bool: 삭제 성공 여부
+        """
+        return self.word_db.delete_word(word_id)
 
-# 단어 추가
-def add_word(word: str, meaning: str, part_of_speech: str, example: str, category_id: int = None) -> int:
-    """
-    Args:
-        word (str): 영어 단어
-        meaning (str): 한글 의미
-        part_of_speech (str): 품사
-        example (str): 예문
-        category_id (int, optional): 카테고리 PK
-    Returns:
-        int: 생성된 단어 PK
-    Example:
-        word_id = word_db.add_word('apple', '사과', 'noun', 'I ate an apple.', 1)
-    """
-    pass
-
-# 단어 수정
-def update_word(word_id: int, word: str, meaning: str, part_of_speech: str, example: str, category_id: int = None) -> bool:
-    """
-    Args:
-        word_id (int): 단어 PK
-        word (str): 영어 단어
-        meaning (str): 한글 의미
-        part_of_speech (str): 품사
-        example (str): 예문
-        category_id (int, optional): 카테고리 PK
-    Returns:
-        bool: 성공 여부
-    Example:
-        success = word_db.update_word(1, 'apple', '사과', 'noun', 'I ate an apple.', 1)
-    """
-    pass
-
-# 단어 삭제
-def delete_word(word_id: int) -> bool:
-    """
-    Args:
-        word_id (int): 단어 PK
-    Returns:
-        bool: 성공 여부
-    Example:
-        success = word_db.delete_word(1)
-    """
-    pass
-
-# 카테고리 추가
-def add_category(name: str) -> int:
-    """
-    Args:
-        name (str): 카테고리명
-    Returns:
-        int: 생성된 카테고리 PK
-    Example:
-        category_id = word_db.add_category('일상생활')
-    """
-    pass
-
-# 전체 카테고리 목록 조회
-def get_categories() -> list:
-    """
-    Returns:
-        list[dict]: 전체 카테고리 목록
-    Example:
-        categories = word_db.get_categories()
-    """
-    pass
-
-# 단어를 카테고리에 추가
-def add_word_to_category(word_id: int, category_id: int) -> bool:
-    """
-    Args:
-        word_id (int): 단어 PK
-        category_id (int): 카테고리 PK
-    Returns:
-        bool: 성공 여부
-    Example:
-        success = word_db.add_word_to_category(1, 1)
-    """
-    pass
-
-# 단어를 카테고리에서 제거
-def remove_word_from_category(word_id: int, category_id: int) -> bool:
-    """
-    Args:
-        word_id (int): 단어 PK
-        category_id (int): 카테고리 PK
-    Returns:
-        bool: 성공 여부
-    Example:
-        success = word_db.remove_word_from_category(1, 1)
-    """
-    pass
-
-# 단어 검색
-def search_words(keyword: str) -> list:
-    """
-    Args:
-        keyword (str): 검색어
-    Returns:
-        list[dict]: 검색된 단어 목록
-    Example:
-        words = word_db.search_words('apple')
-    """
-    pass
-
-# 카테고리 삭제
-def delete_category(category_id: int) -> bool:
-    """
-    Args:
-        category_id (int): 카테고리 PK
-    Returns:
-        bool: 성공 여부
-    Example:
-        success = word_db.delete_category(1)
-    """
-    pass
-
-# 오답 횟수 기준 단어 목록 조회
-def get_words_by_wrong_count(min_wrong_count: int = 1) -> list:
-    """
-    Args:
-        min_wrong_count (int): 최소 오답 횟수
-    Returns:
-        list[dict]: 오답 횟수 기준 단어 목록
-    Example:
-        words = word_db.get_words_by_wrong_count(3)
-    """
-    pass 
+    def update_wrong_count(self, word_id: int) -> bool:
+        """
+        단어의 틀린 횟수를 1 증가시킵니다.
+        
+        Args:
+            word_id (int): 수정할 단어 ID
+        
+        Returns:
+            bool: 수정 성공 여부
+        """
+        return self.word_db.update_wrong_count(word_id) 
