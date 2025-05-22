@@ -1,152 +1,93 @@
-from typing import Dict, List, Optional, Tuple
-from .base_db import BaseDatabase
+from typing import List, Dict
+from .base_db import BaseDatabase, DB_PATH
 
 class GameDB(BaseDatabase):
     # GameDB 인스턴스 초기화
-    def __init__(self, db_path: str = 'toeic_vocabulary.db'):
+    def __init__(self, db_path: str = DB_PATH):
         super().__init__(db_path)
+        self.initialize_tables()
 
-    # 게임 점수 저장 (핵심 기능)
-    def save_score(self, user_id: int, game_type: str, score: int) -> bool:
-        try:
-            self.execute("""
-                INSERT INTO GameScore (user_id, game_type, score)
-                VALUES (?, ?, ?)
-            """, (user_id, game_type, score))
-            self.commit()
-            return True
-        except Exception as e:
-            self.rollback()
-            return False
-
-    # 사용자별 게임 점수 목록 조회
-    def get_user_scores(self, user_id: int, game_type: Optional[str] = None) -> List[Dict]:
-        try:
-            if game_type:
-                return self.fetch_all("""
-                    SELECT score_id, game_type, score, created_at
-                    FROM GameScore
-                    WHERE user_id = ? AND game_type = ?
-                    ORDER BY created_at DESC
-                """, (user_id, game_type))
-            else:
-                return self.fetch_all("""
-                    SELECT score_id, game_type, score, created_at
-                    FROM GameScore
-                    WHERE user_id = ?
-                    ORDER BY created_at DESC
-                """, (user_id,))
-        except Exception as e:
-            return []
-
-    # 게임별 최고 점수(랭킹) 조회 (핵심 기능)
-    def get_high_scores(self, game_type: str, limit: int = 10) -> List[Dict]:
-        try:
-            return self.fetch_all("""
-                SELECT gs.user_id, u.username, gs.score, gs.created_at
-                FROM GameScore gs
-                JOIN User u ON gs.user_id = u.user_id
-                WHERE gs.game_type = ?
-                ORDER BY gs.score DESC
-                LIMIT ?
-            """, (game_type, limit))
-        except Exception as e:
-            return []
-
-    # 사용자별 게임 통계 조회 (총 게임 수, 평균, 최고점 등)
-    def get_user_statistics(self, user_id: int) -> Dict:
-        try:
-            total_stats = self.fetch_one("""
-                SELECT 
-                    COUNT(*) as total_games,
-                    AVG(score) as average_score,
-                    MAX(score) as highest_score
-                FROM GameScore
-                WHERE user_id = ?
-            """, (user_id,))
-            game_type_stats = self.fetch_all("""
-                SELECT 
-                    game_type,
-                    COUNT(*) as game_count,
-                    AVG(score) as average_score,
-                    MAX(score) as highest_score
-                FROM GameScore
-                WHERE user_id = ?
-                GROUP BY game_type
-            """, (user_id,))
-            result = {
-                'total_games': total_stats['total_games'],
-                'average_score': round(total_stats['average_score'], 2),
-                'highest_score': total_stats['highest_score'],
-                'game_types': {}
-            }
-            for stat in game_type_stats:
-                result['game_types'][stat['game_type']] = {
-                    'game_count': stat['game_count'],
-                    'average_score': round(stat['average_score'], 2),
-                    'highest_score': stat['highest_score']
-                }
-            return result
-        except Exception as e:
-            return {
-                'total_games': 0,
-                'average_score': 0.0,
-                'highest_score': 0,
-                'game_types': {}
-            }
-
-    # 사용자별 게임 점수 전체 삭제
-    def delete_user_scores(self, user_id: int) -> bool:
-        try:
-            self.execute("""
-                DELETE FROM GameScore
-                WHERE user_id = ?
-            """, (user_id,))
-            self.commit()
-            return True
-        except Exception as e:
-            self.rollback()
-            return False
-
-class GameScoreDB(BaseDatabase):
-    # GameScore 테이블 생성 및 초기화
     def initialize_tables(self):
-        self.execute("DROP TABLE IF EXISTS GameScore")
+        # Rain Game 점수 테이블 생성
         self.execute("""
-        CREATE TABLE IF NOT EXISTS GameScore (
+        CREATE TABLE IF NOT EXISTS Rain_Game_Score (
             score_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            quiz_id INTEGER,
             user_id INTEGER,
-            score INTEGER NOT NULL,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (quiz_id) REFERENCES quiz(quiz_id),
+            score INTEGER,
+            played_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             FOREIGN KEY (user_id) REFERENCES User(user_id)
         )
         """)
         self.commit()
 
-    # 퀴즈별 점수 저장
-    def save_score(self, quiz_id, user_id, score):
-        self.execute(
-            "INSERT INTO GameScore (quiz_id, user_id, score) VALUES (?, ?, ?)",
-            (quiz_id, user_id, score)
-        )
-        self.commit()
-        return self.cursor.lastrowid
+    def save_rain_game_score(self, user_id: int, score: int) -> bool:
+        """
+        Rain Game 점수를 저장합니다.
+        Args:
+            user_id: 사용자 ID
+            score: 획득한 점수
+        Returns:
+            bool: 성공 여부
+        """
+        try:
+            self.execute(
+                "INSERT INTO Rain_Game_Score (user_id, score) VALUES (?, ?)",
+                (user_id, score)
+            )
+            self.commit()
+            return True
+        except Exception as e:
+            print(f"Rain Game 점수 저장 오류: {e}")
+            self.rollback()
+            return False
 
-    # 사용자별 점수 목록 조회
-    def get_scores_by_user(self, user_id):
-        return self.fetch_all(
-            "SELECT * FROM GameScore WHERE user_id = ?",
+    def get_user_high_score(self, user_id: int) -> int:
+        """
+        사용자의 최고 점수를 조회합니다.
+        Args:
+            user_id: 사용자 ID
+        Returns:
+            int: 최고 점수
+        """
+        result = self.fetch_one(
+            "SELECT MAX(score) as high_score FROM Rain_Game_Score WHERE user_id = ?",
             (user_id,)
         )
+        return result['high_score'] if result and result['high_score'] is not None else 0
 
-    # 퀴즈별 랭킹(점수 내림차순)
-    def get_ranking(self, quiz_id):
-        return self.fetch_all(
-            "SELECT * FROM GameScore WHERE quiz_id = ? ORDER BY score DESC",
-            (quiz_id,)
-        )
+    def get_rain_game_ranking(self, limit: int = 10) -> List[Dict]:
+        """
+        Rain Game 랭킹을 조회합니다.
+        Args:
+            limit: 조회할 상위 랭킹 수
+        Returns:
+            List[Dict]: 랭킹 목록 (사용자 정보와 최고 점수 포함)
+        """
+        return self.fetch_all("""
+            SELECT u.user_id, u.username, MAX(rgs.score) as high_score
+            FROM User u
+            JOIN Rain_Game_Score rgs ON u.user_id = rgs.user_id
+            GROUP BY u.user_id, u.username
+            ORDER BY high_score DESC
+            LIMIT ?
+        """, (limit,))
+
+    def get_user_recent_scores(self, user_id: int, limit: int = 5) -> List[Dict]:
+        """
+        사용자의 최근 점수 기록을 조회합니다.
+        Args:
+            user_id: 사용자 ID
+            limit: 조회할 기록 수
+        Returns:
+            List[Dict]: 최근 점수 기록
+        """
+        return self.fetch_all("""
+            SELECT score, played_at
+            FROM Rain_Game_Score
+            WHERE user_id = ?
+            ORDER BY played_at DESC
+            LIMIT ?
+        """, (user_id, limit))
 
 # GameDB 인스턴스 생성
 game_db = GameDB() 
