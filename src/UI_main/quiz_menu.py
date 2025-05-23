@@ -23,11 +23,6 @@ def quiz_menu(root, user_number):
 
     #카테고리값 임시로 생성
     category_db = CategoryDB()
-    
-    category_db.create_category(user_number, "전체") #기본적으로 포함되어 있어야 하나 어떻게 되있을지는 모름
-    category_db.create_category(user_number, "category1")
-    category_db.create_category(user_number, "category2")
-    category_db.create_category(user_number, "i'm category")
 
     for widget in root.winfo_children():  # 기존 UI 제거
         widget.destroy()

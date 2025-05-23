@@ -6,6 +6,17 @@ def ranking(root, user_number):
     # 메인 메뉴 함수 import
     from quiz_menu import quiz_menu
 
+    #DB 연결
+    import sys
+    import os
+
+    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  #나보다 위 디렉토리에 있음
+    from database.user_db import UserDB
+    from database.game_db import GameDB
+
+    user_db = UserDB()
+    game_db = GameDB()
+
     # 기존 창의 모든 위젯 제거 (화면 초기화)
     for widget in root.winfo_children():
         widget.destroy()
@@ -18,16 +29,20 @@ def ranking(root, user_number):
     def go_to_quiz_menu():
         quiz_menu(root, user_number)
 
-    user_info = ["3", "john", "300"]
-    user_rank = [["1", "pohn", "990"], ["2", "kim", "800"], ["3", "john", "300"], ["4", "miss", "10"]]
-
     #사용자 정보와 뒤로가기 프레임 생성
     user_frame = ttk.Frame(root, borderwidth=2, relief="solid", padding=1)
     user_frame.place(x=5, y=10, width=200, height=50)
 
-    info_label = ttk.Label(user_frame, text= "사용자 ID: " + user_info[1][: 15], font=("Arial", 11))
+    #유저 아이디 검색
+    user_info = user_db.get_user_by_id(user_number)
+    print(user_info)
+
+    #유저 점수 검색
+    highest_score = game_db.get_user_high_score(user_number)
+
+    info_label = ttk.Label(user_frame, text= "사용자 ID: " + user_info["user_name"], font=("Arial", 11))
     info_label.pack(anchor="w")
-    rank_label = ttk.Label(user_frame, text= "현재순위: " + user_info[0] + "위", font=("Arial", 11))
+    rank_label = ttk.Label(user_frame, text= "최고 점수: " + str(highest_score), font=("Arial", 11))
     rank_label.pack(anchor="w")
 
     # '메인 메뉴' 버튼 생성 및 배치
@@ -57,6 +72,13 @@ def ranking(root, user_number):
     tree.configure(yscrollcommand=scrollbar.set)
     scrollbar.pack(side="right", fill="y")
 
-    # Treeview에 단어 데이터 삽입
-    for i, (rank, userID, point) in enumerate(user_rank):
-        tree.insert("", "end", iid=i, values=(rank, userID, point))
+    #순위권 유저 가져오기
+    ranker_top100 = game_db.get_rain_game_ranking(100)
+
+    #Treeview에 단어 데이터 삽입
+    rank = 1
+    for data in ranker_top100:
+        tree.insert("", "end", values=(rank, data["user_name"], data["high_score"]))
+        rank += 1
+    
+    #print(game_db.get_rain_game_ranking(10))
