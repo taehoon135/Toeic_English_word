@@ -64,10 +64,10 @@ class GameDB(BaseDatabase):
             List[Dict]: 랭킹 목록 (사용자 정보와 최고 점수 포함)
         """
         return self.fetch_all("""
-            SELECT u.user_id, u.username, MAX(rgs.score) as high_score
+            SELECT u.user_id, u.user_name, MAX(rgs.score) as high_score
             FROM User u
             JOIN Rain_Game_Score rgs ON u.user_id = rgs.user_id
-            GROUP BY u.user_id, u.username
+            GROUP BY u.user_id, u.user_name
             ORDER BY high_score DESC
             LIMIT ?
         """, (limit,))
