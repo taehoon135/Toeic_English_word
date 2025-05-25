@@ -50,7 +50,7 @@ def vocab_window(root, user_number):
 
         if (category == "전체"):
             for w in words:
-                if keyword in w["english"].lower():
+                if w["english"].lower().startswith(keyword):
                     filtered_words.append(w)
         else:
             #카테고리 번호 찾기
@@ -64,7 +64,7 @@ def vocab_window(root, user_number):
             
             for w in words:
                 #입력한 값이 테이블에 있다면, 카테고리가 전체거나 일치하면 검색에 포함
-                if keyword in w['english'].lower() and any(w['english'] == s['english'] for s in search_category_list):
+                if w['english'].lower().startswith(keyword) and any(w['english'] == s['english'] for s in search_category_list):
                     filtered_words.append(w)
 
         update_word_table()
