@@ -93,11 +93,11 @@ def vocab_window(root, user_number):
                 return
 
             #카테고리 아이디, 워드 아이디
-            success = category_db.add_word_to_category(category_number, data[0]) #카테고리 업데이트
-            if success:
+            #success = category_db.add_word_to_category(category_number, data[0]) #카테고리 업데이트
+            if category_db.add_word_to_category(category_number, data[0]): #카테고리 업데이트
                 messagebox.showinfo("성공", "카테고리가 업데이트 되었습니다.")
             else:
-                messagebox.showwarning("경고", "실패")
+                messagebox.showwarning("실패", "중복된 단어가 선택되었습니다.")
 
     #단어 클릭 시 하단에 정보 출력
     def on_row_click(event):
