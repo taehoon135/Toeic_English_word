@@ -58,7 +58,8 @@ def quiz_menu(root, user_number):
     for category in category_list:
         category_only_name.append(category["name"])
     #전체를 맨 앞으로 보냄
-    category_only_name.remove("전체")
+    if "전체" in category_only_name:
+        category_only_name.remove("전체")
     category_only_name.insert(0, "전체")
 
     options = category_only_name
