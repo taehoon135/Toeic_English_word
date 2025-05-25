@@ -51,10 +51,11 @@ def category_adjust(root, user_number, category_id):
         #데이터베이스에 등록
         new_category = category_name.get().strip()
         if category_db.update_category(category_id, new_category, user_number): 
+            #print(category_db.update_category(category_id, new_category, user_number))
             messagebox.showinfo("성공", "카테고리 수정 완료.")
+            back_to_category()
         else:
-            messagebox.showwarning("실패", "오류 발생")
-        back_to_category()
+            messagebox.showwarning("실패", "중복된 카테고리 이름입니다.")
 
     root.geometry("320x250")
     root.title("카테고리")

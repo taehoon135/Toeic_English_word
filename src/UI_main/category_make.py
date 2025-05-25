@@ -51,10 +51,11 @@ def category_make(root, user_number):
         #데이터베이스에 등록
         new_category = category_name.get().strip()
         if category_db.create_category(user_number, new_category):
+            #print(category_db.create_category(user_number, new_category))
             messagebox.showinfo("성공", "카테고리 생성 완료.")
+            back_to_category()
         else:
-            messagebox.showwarning("실패", "오류 발생")
-        back_to_category()
+            messagebox.showwarning("실패", "중복된 카테고리 이름입니다.")
 
     root.geometry("320x250")
     root.title("카테고리")

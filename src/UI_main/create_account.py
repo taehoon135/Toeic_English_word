@@ -62,12 +62,19 @@ def register(root):
         if (password.get() != comfirm_password.get()):
             messagebox.showwarning("경고", "비밀번호가 일치하지 않습니다.")
             return
+        if not phone_number.get().isdigit():
+            messagebox.showwarning("경고", "전화번호가 숫자가 아닙니다.")
+            return
 
         #비밀번호가 일치하면 데이터베이스에 항목 추가
         #user_login_id, user_pw, user_name, is_admin=0, user_api=None
         if (password.get() == comfirm_password.get()):
             id_num = user_db.register_user(id.get(), password.get(), name.get(), phone_number.get())
-            print(id_num, id.get(), password.get())
+
+            if id_num == None:
+                messagebox.showwarning("경고", "중복된 ID입니다.")
+                return
+            #print(id_num, id.get(), password.get())
             messagebox.showinfo("성공", "회원가입이 완료되었습니다!")
             back_to_login()
         else:
