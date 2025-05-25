@@ -1,0 +1,8 @@
+[Task]:
+Make python files that tests each test cases described in Blackbox_test_cases.csv
+One file for one test case
+Each files should be placed under 'test' directory
+Use pytest module
+For Quiz models, input procedure means creating class instance, and output means the output of 'get' method
+[Resource]:
+Blackbox_test_cases.csv

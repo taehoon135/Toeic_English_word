@@ -23,7 +23,8 @@ class ClozeQuizModel(BaseQuizModel):
         self.db = db
         self.words = []
         self.meanings = []
-        self._parse_db(db)
+        if db: 
+            self._parse_db(db)
     
     def _parse_db(self, db):
         for word in db:

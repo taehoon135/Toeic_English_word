@@ -14,10 +14,13 @@ def get_response(prompt: str, model: str = "gemini-2.0-flash", API_KEY=None) -> 
         Response from LLM
     """
 
+    if prompt == "":
+        return ""
+
     if 'gemini' in model:
         return generate_gemini_response(prompt, API_KEY)
     else:
-        print("Unsupported model")
+        return ""
 
 
 def generate_gemini_response(prompt: str, API_KEY: str, model: str = "gemini-2.0-flash") -> str:
