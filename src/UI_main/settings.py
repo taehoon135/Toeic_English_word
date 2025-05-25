@@ -114,21 +114,21 @@ def edit_info_window(root, user_number):
 
     # 이름 입력
     ttk.Label(root, text="이름", font=("Arial", 12)).pack(pady=(10, 5))
-    ttk.Entry(root, textvariable=name_var, width=40).pack(pady=5)
+    ttk.Entry(root, textvariable=name_var, width=40).pack(pady=3)
 
     # 전화번호 입력
     ttk.Label(root, text="전화번호", font=("Arial", 12)).pack(pady=(10, 5))
-    ttk.Entry(root, textvariable=phone_var, width=40).pack(pady=5)
+    ttk.Entry(root, textvariable=phone_var, width=40).pack(pady=3)
 
     # 비밀번호 입력
     ttk.Label(root, text="새 비밀번호", font=("Arial", 12)).pack(pady=(10, 5))
     password_entry = ttk.Entry(root, textvariable=password_var, show="*", width=40)
-    password_entry.pack(pady=5)
+    password_entry.pack(pady=3)
 
     # API 키 입력
     ttk.Label(root, text="API 키", font=("Arial", 12)).pack(pady=(10, 5))
     api_entry = ttk.Entry(root, textvariable=api_var, show="*", width=40)
-    api_entry.pack(pady=5)
+    api_entry.pack(pady=3)
 
     # API 키 표시/숨기기 기능
     show_api = tk.BooleanVar()
@@ -148,7 +148,7 @@ def edit_info_window(root, user_number):
     
     # 체크박스들
     checkbox_frame = ttk.Frame(root)
-    checkbox_frame.pack(pady=10)
+    checkbox_frame.pack(pady=5)
     
     ttk.Checkbutton(checkbox_frame, text="비밀번호 표시", variable=show_password, command=toggle_password_visibility).pack(side=tk.LEFT, padx=10)
     ttk.Checkbutton(checkbox_frame, text="API 키 표시", variable=show_api, command=toggle_api_visibility).pack(side=tk.LEFT, padx=10)
@@ -189,7 +189,7 @@ def edit_info_window(root, user_number):
             result_label.config(text=f"오류 발생: {str(e)}", bootstyle="danger")
 
     save_button = ttk.Button(root, text="저장", bootstyle="success", command=save_changes)
-    save_button.pack(pady=10)
+    save_button.pack(pady=5)
 
     cancel_button = ttk.Button(root, text="취소", bootstyle="danger", command=lambda: settings_window(root, user_number))
     cancel_button.pack(pady=5)
@@ -222,7 +222,5 @@ def update_user_info(user_id: int, user_name: str, user_phone: str = None, user_
 
 if __name__ == "__main__":
     root = ttk.Window(themename="flatly")
-    root.geometry("400x500")  # ✅ 초기 창 크기 설정 (원래 크기로)
-    root.resizable(True, True)  # ✅ 크기 조정 비활성화
     settings_window(root, user_number=1)
     root.mainloop()
