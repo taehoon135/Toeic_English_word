@@ -46,16 +46,27 @@ class UserDB(BaseDatabase):
             int: 사용자 ID (성공 시) 또는 None (실패 시)
         """
         try:
-            self.execute(
+            # 중복 사용자 체크
+            existing = self.fetch_one(
+                "SELECT user_id FROM User WHERE user_login_id = ?",
+                (user_login_id,)
+            )
+            if existing:
+                print(f"이미 존재하는 사용자명: {user_login_id}")
+                return None
+
+            # 새 사용자 등록
+            success = self.execute(
                 """
-                INSERT INTO User 
-                (user_login_id, user_pw, user_name, user_phone, is_admin, user_api) 
+                INSERT INTO User (user_login_id, user_pw, user_name, user_phone, is_admin, user_api)
                 VALUES (?, ?, ?, ?, ?, ?)
                 """,
                 (user_login_id, user_pw, user_name, user_phone, is_admin, user_api)
             )
-            self.commit()
-            return self.cursor.lastrowid
+            if success:
+                self.commit()
+                return self.cursor.lastrowid
+            return None
         except Exception as e:
             print(f"사용자 등록 오류: {e}")
             self.rollback()
