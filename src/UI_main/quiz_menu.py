@@ -74,11 +74,11 @@ def quiz_menu(root, user_number):
     modes = ["해석 맞추기", "해석 맞추기", "단어 맞추기", "사지선다형 단어 맞추기", "문장 채우기 게임", "산성비 게임"]
 
     #이미지 불러오기
-    image1 = Image.open("C:\\github\\sw-egineering\\src\\UI_main\\asset\\z.exampleForGame1.jpg")  # 불러올 이미지 경로 (임의로 자기 경로에 맞게 설정해야 함)
-    image1_5 = Image.open("C:\\github\\sw-egineering\\src\\UI_main\\asset\\z.exampleForGame1_5.jpg")
-    image2 = Image.open("C:\\github\\sw-egineering\\src\\UI_main\\asset\\z.exampleForGame2.jpg")
-    image3 = Image.open("C:\\github\\sw-egineering\\src\\UI_main\\asset\\z.exampleForGame3.jpg")
-    image4 = Image.open("C:\\github\\sw-egineering\\src\\UI_main\\asset\\z.exampleForGame4.jpg")
+    image1 = Image.open(os.path.join(os.path.dirname(__file__), "asset", "z.exampleForGame1.jpg"))  # 불러올 이미지 경로 (임의로 자기 경로에 맞게 설정해야 함)
+    image1_5 = Image.open(os.path.join(os.path.dirname(__file__), "asset",  "z.exampleForGame1_5.jpg"))
+    image2 = Image.open(os.path.join(os.path.dirname(__file__), "asset", "z.exampleForGame2.jpg"))
+    image3 = Image.open(os.path.join(os.path.dirname(__file__), "asset", "z.exampleForGame3.jpg"))
+    image4 = Image.open(os.path.join(os.path.dirname(__file__), "asset", "z.exampleForGame4.jpg"))
     image1 = image1.resize((350, 300))
     image1_5 = image1_5.resize((350, 300))
     image2 = image2.resize((350, 300)) 

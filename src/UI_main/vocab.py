@@ -239,7 +239,7 @@ def vocab_window(root, user_number):
     confirm_button.grid(row=0, column=1, sticky="w")
 
     # 소리 듣기 버튼 (tk.Button 사용)
-    check_img = PhotoImage(file="C:\\github\\sw-egineering\\src\\UI_main\\asset\\z.sound.png")
+    check_img = PhotoImage(file=os.path.join(os.path.dirname(__file__), "asset", "z.sound.png"))
     sound_button = tk.Button(
         option_row,
         image=check_img,
