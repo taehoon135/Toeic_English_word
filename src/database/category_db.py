@@ -165,7 +165,7 @@ class CategoryDB(BaseDatabase):
             
             if existing:
                 print(f"Word ID {word_id} is already in category ID {category_id}.")
-                return True  # 이미 연결되어 있으면 성공으로 간주
+                return False  # 이미 연결되어 있으면 실패로 간주
             
             self.execute(
                 "INSERT INTO WordCategory (category_id, word_id) VALUES (?, ?)",
