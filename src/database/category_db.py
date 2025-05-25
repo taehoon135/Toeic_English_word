@@ -36,7 +36,7 @@ class CategoryDB(BaseDatabase):
             self.rollback()
 
     # 카테고리 생성 (핵심 기능)
-    def create_category(self, user_id: int, category_name: str) -> int:
+    def create_category(self, user_id: int, category_name: str) -> Optional[int]:
         """
         새 카테고리를 생성합니다.
         
@@ -45,31 +45,53 @@ class CategoryDB(BaseDatabase):
             category_name: 카테고리 이름
             
         Returns:
-            생성된 카테고리의 ID, 실패 시 0
+            생성된 카테고리의 ID
+            None: 생성 실패 시 (사용자가 없거나, 중복된 카테고리가 있거나, DB 오류 발생 시)
         """
+        if not category_name or not category_name.strip():
+            print("카테고리 이름은 비어있을 수 없습니다.")
+            return None
+
         try:
-            # 이미 존재하는 카테고리인지 확인
+            # 사용자 존재 여부 확인
+            user_exists = self.fetch_one(
+                "SELECT 1 FROM User WHERE user_id = ?",
+                (user_id,)
+            )
+            if not user_exists:
+                print(f"사용자 ID {user_id}가 존재하지 않습니다.")
+                return None
+
+            # 트랜잭션 시작
+            self.begin_transaction()
+            
+            # 중복 카테고리 확인
             existing = self.fetch_one(
                 "SELECT category_id FROM Category WHERE user_id = ? AND name = ?",
-                (user_id, category_name)
+                (user_id, category_name.strip())
             )
             
             if existing:
-                print(f"Category '{category_name}' already exists for user {user_id}.")
-                return existing['category_id']
-                
+                print(f"카테고리 '{category_name}'는 이미 존재합니다.")
+                self.rollback()
+                return None
+
+            # 새 카테고리 생성
             self.execute(
                 "INSERT INTO Category (name, user_id) VALUES (?, ?)",
-                (category_name, user_id)
+                (category_name.strip(), user_id)
             )
-            self.commit()
+            
             new_id = self.cursor.lastrowid
-            print(f"Created new category '{category_name}' with ID {new_id} for user {user_id}.")
+            self.commit()
+            
+            print(f"새 카테고리 '{category_name}' (ID: {new_id})가 생성되었습니다.")
             return new_id
+
         except Exception as e:
-            print(f"Error creating category: {e}")
             self.rollback()
-            return 0
+            print(f"카테고리 생성 중 오류 발생: {e}")
+            return None
 
     # 사용자별 카테고리 목록 조회 - 각 카테고리에 포함된 단어 수 포함
     def get_categories_by_user(self, user_id: int) -> List[Dict]:
