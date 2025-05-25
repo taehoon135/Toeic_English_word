@@ -10,7 +10,7 @@ current_theme = "flatly"  # 기본 테마 (라이트 모드)
 root = ttk.Window(themename=current_theme)  # 초기 테마: flatly (라이트 모드)
 root.title("영단어 학습 프로그램")
 root.geometry("320x400")  # 높이 조정
-root.resizable(False, False)
+root.resizable(True, True)
 
 # 스타일 설정 (회색 플레이스홀더 스타일 추가)
 style = ttk.Style()
