@@ -54,12 +54,12 @@ def quiz_menu(root, user_number):
 
     # 옵션 선택 (OptionMenu)
     category_list = category_db.get_user_categories(user_number)
-    category_only_name = []
+    category_only_name = ["임시"] #카테고리 이름만을 포함하는 리스트 생성
     for category in category_list:
         category_only_name.append(category["name"])
     #전체를 맨 앞으로 보냄
-    # if "전체" in category_only_name:
-    #     category_only_name.remove("전체")
+    if "전체" in category_only_name:
+        category_only_name.remove("전체")
     category_only_name.insert(0, "전체")
 
     options = category_only_name
@@ -74,11 +74,11 @@ def quiz_menu(root, user_number):
     modes = ["해석 맞추기", "해석 맞추기", "단어 맞추기", "사지선다형 단어 맞추기", "문장 채우기 게임", "산성비 게임"]
 
     #이미지 불러오기
-    image1 = Image.open(os.path.join(os.path.dirname(__file__), "asset", "z.exampleForGame1.jpg"))  # 불러올 이미지 경로 (임의로 자기 경로에 맞게 설정해야 함)
-    image1_5 = Image.open(os.path.join(os.path.dirname(__file__), "asset",  "z.exampleForGame1_5.jpg"))
-    image2 = Image.open(os.path.join(os.path.dirname(__file__), "asset", "z.exampleForGame2.jpg"))
-    image3 = Image.open(os.path.join(os.path.dirname(__file__), "asset", "z.exampleForGame3.jpg"))
-    image4 = Image.open(os.path.join(os.path.dirname(__file__), "asset", "z.exampleForGame4.jpg"))
+    image1 = Image.open("C:\\Users\\sangw\\OneDrive\\Desktop\\상명대\\3-1\\소프트웨어공학\\sw-egineering\\src\\UI_main\\asset\\z.exampleForGame1.jpg")  # 불러올 이미지 경로 (임의로 자기 경로에 맞게 설정해야 함)
+    image1_5 = Image.open("C:\\Users\\sangw\\OneDrive\\Desktop\\상명대\\3-1\\소프트웨어공학\\sw-egineering\\src\\UI_main\\asset\\z.exampleForGame1_5.jpg")
+    image2 = Image.open("C:\\Users\\sangw\\OneDrive\\Desktop\\상명대\\3-1\\소프트웨어공학\\sw-egineering\\src\\UI_main\\asset\\z.exampleForGame2.jpg")
+    image3 = Image.open("C:\\Users\\sangw\\OneDrive\\Desktop\\상명대\\3-1\\소프트웨어공학\\sw-egineering\\src\\UI_main\\asset\\z.exampleForGame3.jpg")
+    image4 = Image.open("C:\\Users\\sangw\\OneDrive\\Desktop\\상명대\\3-1\\소프트웨어공학\\sw-egineering\\src\\UI_main\\asset\\z.exampleForGame4.jpg")
     image1 = image1.resize((350, 300))
     image1_5 = image1_5.resize((350, 300))
     image2 = image2.resize((350, 300)) 
