@@ -54,12 +54,12 @@ def quiz_menu(root, user_number):
 
     # 옵션 선택 (OptionMenu)
     category_list = category_db.get_user_categories(user_number)
-    category_only_name = ["임시"] #카테고리 이름만을 포함하는 리스트 생성
+    category_only_name = []
     for category in category_list:
         category_only_name.append(category["name"])
     #전체를 맨 앞으로 보냄
-    if "전체" in category_only_name:
-        category_only_name.remove("전체")
+    # if "전체" in category_only_name:
+    #     category_only_name.remove("전체")
     category_only_name.insert(0, "전체")
 
     options = category_only_name
