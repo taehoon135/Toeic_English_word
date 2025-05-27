@@ -84,7 +84,8 @@ def sign_login(root):
                 widget.destroy()
                 
         root.title("영단어 학습 프로그램")
-        root.geometry("320x400")
+        root.geometry("320x400")  # ✅ 초기 창 크기 설정 (원래 크기로)
+        root.resizable(True, True)  # ✅ 크기 조정 활성화
 
         # 앱 타이틀
         title_label = ttk.Label(root, text="영단어 학습 프로그램", font=("Arial", 18, "bold"), bootstyle="primary")
