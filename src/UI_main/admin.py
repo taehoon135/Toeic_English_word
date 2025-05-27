@@ -35,6 +35,7 @@ def admin_window(root):
         widget.destroy()
 
     root.title("관리자 페이지")
+    root.geometry("440x550")  # ✅ 초기 창 크기 설정 (원래 크기로)
 
     # 타이틀
     title_label = ttk.Label(root, text="관리자 페이지", font=("Arial", 20, "bold"), bootstyle="dark")
@@ -89,7 +90,7 @@ def admin_info_edit(root):
 
     ID_var = tk.StringVar(value=admin_info["ID"])
     password_var = tk.StringVar()
-    api_var = tk.StringVar()
+    #api_var = tk.StringVar()
 
     ttk.Label(root, text="아이디").pack()
     ttk.Entry(root, textvariable=ID_var).pack(pady=5)
@@ -97,16 +98,16 @@ def admin_info_edit(root):
     ttk.Label(root, text="새 비밀번호").pack()
     ttk.Entry(root, textvariable=password_var, show="*").pack(pady=5)
     
-    ttk.Label(root, text="API KEY (선택사항)").pack()
-    ttk.Entry(root, textvariable=api_var, width=50).pack(pady=5)
+    #ttk.Label(root, text="API KEY (선택사항)").pack()
+    #ttk.Entry(root, textvariable=api_var, width=50).pack(pady=5)
 
 
     def admin_save_changes():
         admin_info["ID"] = ID_var.get()
         if password_var.get():
             admin_info["password"] = password_var.get()
-        if api_var.get():
-            admin_info["api_key"] = api_var.get()
+        #if api_var.get():
+        #    admin_info["api_key"] = api_var.get()
         admin_window(root)
 
     save_button = ttk.Button(root, text="저장", bootstyle="success", command=admin_save_changes)
@@ -274,5 +275,3 @@ def handle_delete_word(root):
 
 def handle_update_word(root):
     update_word_ui(root)
-    
-
