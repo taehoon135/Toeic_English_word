@@ -17,8 +17,6 @@ def quiz_menu(root, user_number):
 
     #DB연결
     import os
-    import sys
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  #나보다 위 디렉토리에 있음
     from database.category_db import CategoryDB
 
     #카테고리값 임시로 생성
@@ -54,7 +52,7 @@ def quiz_menu(root, user_number):
 
     # 옵션 선택 (OptionMenu)
     category_list = category_db.get_user_categories(user_number)
-    category_only_name = ["임시"] #카테고리 이름만을 포함하는 리스트 생성
+    category_only_name = [] #카테고리 이름만을 포함하는 리스트 생성
     for category in category_list:
         category_only_name.append(category["name"])
     #전체를 맨 앞으로 보냄
@@ -69,16 +67,24 @@ def quiz_menu(root, user_number):
     option_menu = ttk.OptionMenu(root, option_var, option_var.get(),*options)
     option_menu.pack(pady=10)
 
+    # 문제 수 선택 (회의록 2차: 개수는 사용자가 정하고, 틀린 횟수에 비례해 샘플링). 사지선다는 최소 4개 필요
+    count_frame = ttk.Frame(root)
+    count_frame.pack()
+    ttk.Label(count_frame, text="문제 수").pack(side="left", padx=5)
+    count_var = tk.IntVar(value=10)
+    ttk.Spinbox(count_frame, from_=4, to=100, textvariable=count_var, width=5).pack(side="left")
+
     # 모드 선택 (OptionMenu)
     mode_var = tk.StringVar(value="Select Mode")
     modes = ["해석 맞추기", "해석 맞추기", "단어 맞추기", "사지선다형 단어 맞추기", "문장 채우기 게임", "산성비 게임"]
 
     #이미지 불러오기
-    image1 = Image.open("C:\\Users\\sangw\\OneDrive\\Desktop\\상명대\\3-1\\소프트웨어공학\\sw-egineering\\src\\UI_main\\asset\\z.exampleForGame1.jpg")  # 불러올 이미지 경로 (임의로 자기 경로에 맞게 설정해야 함)
-    image1_5 = Image.open("C:\\Users\\sangw\\OneDrive\\Desktop\\상명대\\3-1\\소프트웨어공학\\sw-egineering\\src\\UI_main\\asset\\z.exampleForGame1_5.jpg")
-    image2 = Image.open("C:\\Users\\sangw\\OneDrive\\Desktop\\상명대\\3-1\\소프트웨어공학\\sw-egineering\\src\\UI_main\\asset\\z.exampleForGame2.jpg")
-    image3 = Image.open("C:\\Users\\sangw\\OneDrive\\Desktop\\상명대\\3-1\\소프트웨어공학\\sw-egineering\\src\\UI_main\\asset\\z.exampleForGame3.jpg")
-    image4 = Image.open("C:\\Users\\sangw\\OneDrive\\Desktop\\상명대\\3-1\\소프트웨어공학\\sw-egineering\\src\\UI_main\\asset\\z.exampleForGame4.jpg")
+    asset_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "asset")
+    image1 = Image.open(os.path.join(asset_dir, "z.exampleForGame1.jpg"))
+    image1_5 = Image.open(os.path.join(asset_dir, "z.exampleForGame1_5.jpg"))
+    image2 = Image.open(os.path.join(asset_dir, "z.exampleForGame2.jpg"))
+    image3 = Image.open(os.path.join(asset_dir, "z.exampleForGame3.jpg"))
+    image4 = Image.open(os.path.join(asset_dir, "z.exampleForGame4.jpg"))
     image1 = image1.resize((350, 300))
     image1_5 = image1_5.resize((350, 300))
     image2 = image2.resize((350, 300)) 
@@ -89,7 +95,7 @@ def quiz_menu(root, user_number):
     photo2 = ImageTk.PhotoImage(image2)
     photo3 = ImageTk.PhotoImage(image3)
     photo4 = ImageTk.PhotoImage(image4)
-    mode_explain = [photo1, photo1_5, photo2, photo3, photo4]
+    mode_explain = [photo1_5, photo1, photo2, photo3, photo4]  # 해석 맞추기(단어→뜻), 단어 맞추기(뜻→단어), ...
 
     # 모드 변경 시 그 모드에 대한 예시를 이미지로 출력
     def handle_mode_change(selected_mode):
@@ -125,21 +131,20 @@ def quiz_menu(root, user_number):
     label_display1.pack(pady=20, fill="both", expand=True)
 
     # 모드에 따라 다른 함수 실행
-    def mode_1_function(selected_category):
-        quiz_interpret(root, user_number, selected_category)
+    def mode_1_function(selected_category, count):
+        quiz_interpret(root, user_number, selected_category, count)
 
-    def mode_1_5_function(selected_category):
-        quiz_word1(root, user_number, selected_category)
+    def mode_1_5_function(selected_category, count):
+        quiz_word1(root, user_number, selected_category, count)
 
-    def mode_2_function(selected_category):
-        quiz_four_choice(root, user_number, selected_category) #선택된 카테고리로 str값임
+    def mode_2_function(selected_category, count):
+        quiz_four_choice(root, user_number, selected_category, count) #선택된 카테고리로 str값임
 
-    def mode_3_function(selected_category):
+    def mode_3_function(selected_category, count):
         #API값이 존재하는지 확인
-        from database.user_db import UserDB
-        user_db = UserDB()
+        from database.user_db import user_db
         if (user_db.get_api_key(user_number) != None):
-            quiz_sentence(root, user_number, selected_category)
+            quiz_sentence(root, user_number, selected_category, count)
         else:
             from tkinter import messagebox
             messagebox.showwarning("경고", "API를 등록해주세요.")
@@ -151,24 +156,29 @@ def quiz_menu(root, user_number):
     def start_button_clicked():
         selected_mode = mode_var.get()
         selected_category = option_var.get()
+        try:
+            count = max(4, int(count_var.get()))
+        except (tk.TclError, ValueError):
+            messagebox.showwarning("경고", "문제 수는 숫자로 입력해주세요.")
+            return
 
         #카테고리가 전체인 경우 아래 코드를 무시함
         if (selected_category != "전체"):
             #카테고리 내의 단어가 4개 미만인 경우를 경우를 고려
             category_id = category_id_search(user_number, selected_category)  #카테고리 이름으로 번호 찾기
             words_in_category = category_db.get_words_in_category(category_id)
-            if (len(words_in_category) <= 4):
+            if (len(words_in_category) < 4):
                 messagebox.showwarning("경고", "카테고리 내에 단어를 추가해주세요.")
                 return
 
         if selected_mode == "해석 맞추기":
-            mode_1_function(selected_category)
+            mode_1_function(selected_category, count)
         elif selected_mode == "단어 맞추기":
-            mode_1_5_function(selected_category)
+            mode_1_5_function(selected_category, count)
         elif selected_mode == "사지선다형 단어 맞추기":
-            mode_2_function(selected_category)
+            mode_2_function(selected_category, count)
         elif selected_mode == "문장 채우기 게임":
-            mode_3_function(selected_category)
+            mode_3_function(selected_category, count)
         elif selected_mode == "산성비 게임":
             mode_4_function(selected_category)
         else:

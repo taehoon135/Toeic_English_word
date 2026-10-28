@@ -1,139 +1,87 @@
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Optional
 from .base_db import BaseDatabase, DB_PATH
+from .word_db import WORD_WITH_WRONG_COUNT, WRONG_COUNT_UP, WRONG_COUNT_DOWN
 import random
 
 class QuizDB(BaseDatabase):
     def __init__(self, db_path: str = DB_PATH):
         super().__init__(db_path)
-        self.initialize_tables()
 
-    def initialize_tables(self):
-        self.execute("DROP TABLE IF EXISTS quiz")
-        self.execute("DROP TABLE IF EXISTS quiz_question")
-        self.execute("""
-        CREATE TABLE IF NOT EXISTS quiz (
-            quiz_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            quiz_type TEXT NOT NULL,
-            category_id INTEGER,
-            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (category_id) REFERENCES Category(category_id)
-        )
-        """)
-        self.execute("""
-        CREATE TABLE IF NOT EXISTS quiz_question (
-            question_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            quiz_id INTEGER NOT NULL,
-            question TEXT NOT NULL,
-            correct_answer TEXT NOT NULL,
-            options TEXT,
-            hint TEXT,
-            word_id INTEGER,
-            FOREIGN KEY (quiz_id) REFERENCES quiz(quiz_id),
-            FOREIGN KEY (word_id) REFERENCES Word(word_id)
-        )
-        """)
+    def create_quiz(self, quiz_type: str, user_id: Optional[int] = None, category_id: Optional[int] = None) -> Optional[int]:
+        """
+        새로운 퀴즈(1회 풀이 세션)를 생성합니다.
+        Args:
+            quiz_type: 'short_answer_ek', 'short_answer_ke', 'cloze', 'four_choice', 'rain'
+            user_id: 푸는 사용자 ID
+            category_id: 선택된 카테고리 ID (전체면 None)
+        Returns:
+            생성된 퀴즈 ID 또는 None
+        """
+        if not self.execute(
+            "INSERT INTO quiz (quiz_type, user_id, category_id) VALUES (?, ?, ?)",
+            (quiz_type, user_id, category_id)
+        ):
+            self.rollback()
+            return None
         self.commit()
+        return self.cursor.lastrowid
 
-    def create_quiz(self, quiz_type: str, category_id: Optional[int] = None) -> int:
-        """
-        새로운 퀴즈를 생성합니다.
-        Args:
-            quiz_type: 퀴즈 타입 ('short_answer_ek', 'short_answer_ke', 'cloze', 'four_choice', 'rain')
-            category_id: 선택된 카테고리 ID (선택사항)
-        Returns:
-            int: 생성된 퀴즈 ID
-        """
-        try:
-            self.execute(
-                "INSERT INTO quiz (quiz_type, category_id) VALUES (?, ?)",
-                (quiz_type, category_id)
-            )
-            self.commit()
-            return self.cursor.lastrowid
-        except Exception as e:
-            print(f"퀴즈 생성 오류: {e}")
-            self.rollback()
-            return None
-
-    def add_quiz_question(self, quiz_id: int, question: str, correct_answer: str, 
+    def add_quiz_question(self, quiz_id: int, question: str, correct_answer: str,
                          options: Optional[str] = None, hint: Optional[str] = None,
-                         word_id: Optional[int] = None) -> int:
-        """
-        퀴즈에 문제를 추가합니다.
-        Args:
-            quiz_id: 퀴즈 ID
-            question: 문제 내용
-            correct_answer: 정답
-            options: 선택지 (4지선다형의 경우)
-            hint: 힌트
-            word_id: 관련 단어 ID
-        Returns:
-            int: 생성된 문제 ID
-        """
-        try:
-            self.execute(
-                """
-                INSERT INTO quiz_question 
-                (quiz_id, question, correct_answer, options, hint, word_id)
-                VALUES (?, ?, ?, ?, ?, ?)
-                """,
-                (quiz_id, question, correct_answer, options, hint, word_id)
-            )
-            self.commit()
-            return self.cursor.lastrowid
-        except Exception as e:
-            print(f"문제 추가 오류: {e}")
+                         word_id: Optional[int] = None) -> Optional[int]:
+        """퀴즈에 문제를 추가하고 문제 ID를 반환합니다."""
+        if not self.execute(
+            """
+            INSERT INTO quiz_question
+            (quiz_id, question, correct_answer, options, hint, word_id)
+            VALUES (?, ?, ?, ?, ?, ?)
+            """,
+            (quiz_id, question, correct_answer, options, hint, word_id)
+        ):
             self.rollback()
             return None
+        self.commit()
+        return self.cursor.lastrowid
 
-    def get_random_words_for_quiz(self, count: int = 5, category_id: Optional[int] = None) -> List[Dict]:
+    def get_random_words_for_quiz(self, count: Optional[int] = None, category_id: Optional[int] = None,
+                                  user_id: Optional[int] = None) -> List[Dict]:
         """
-        퀴즈용 랜덤 단어 목록을 조회합니다.
+        퀴즈용 단어를 뽑습니다. 해당 사용자가 많이 틀린 단어일수록 뽑힐 확률이 높습니다 (가중치 = wrong_count + 1).
+        Args:
+            count: 뽑을 개수 (None이면 전부, 순서만 섞음)
+            category_id: 카테고리 ID (None이면 전체 단어)
+            user_id: 틀린 횟수 기준 사용자 (None이면 균등 추출)
         """
-        query = """
-            SELECT w.*, c.name as category_name
-            FROM Word w
-            LEFT JOIN Category c ON w.category_id = c.category_id
-        """
-        params = []
-        
-        if category_id:
-            query += " WHERE w.category_id = ?"
-            params.append(category_id)
-            
-        query += " ORDER BY RANDOM() LIMIT ?"
-        params.append(count)
-        
-        return self.fetch_all(query, tuple(params))
+        if category_id is None:
+            words = self.fetch_all(WORD_WITH_WRONG_COUNT, (user_id,))
+            for w in words:
+                w['category_name'] = None
+        else:
+            words = self.fetch_all(f"""
+                SELECT t.*, c.name AS category_name
+                FROM ({WORD_WITH_WRONG_COUNT}) t
+                JOIN WordCategory wc ON t.word_id = wc.word_id
+                JOIN Category c ON c.category_id = wc.category_id
+                WHERE wc.category_id = ?
+            """, (user_id, category_id))
+        # 가중 비복원 추출 (Efraimidis-Spirakis): key = U^(1/w) 상위 count개
+        words.sort(key=lambda w: random.random() ** (1 / ((w['wrong_count'] or 0) + 1)), reverse=True)
+        return words if count is None else words[:count]
 
-    def record_quiz_result(self, user_id: int, word_id: int, is_correct: bool) -> bool:
+    def record_quiz_result(self, user_id: int, quiz_id: int, word_id: int, is_correct: bool) -> bool:
         """
-        퀴즈 결과를 기록합니다.
+        문제 1개의 풀이 결과를 기록합니다.
+        해당 사용자의 wrong_count: 오답이면 +1, 정답이면 -1 (0 미만으로는 내려가지 않음).
         """
-        try:
-            # 퀴즈 결과 기록
-            self.execute(
-                """
-                INSERT INTO WordHistory (
-                    user_id, word_id, is_correct, study_type
-                ) VALUES (?, ?, ?, 'quiz')
-                """,
-                (user_id, word_id, 1 if is_correct else 0)
-            )
-            
-            # 틀린 경우 wrong_count 증가
-            if not is_correct:
-                self.execute(
-                    "UPDATE Word SET wrong_count = wrong_count + 1 WHERE word_id = ?",
-                    (word_id,)
-                )
-                
-            self.commit()
-            return True
-        except Exception as e:
-            print(f"퀴즈 결과 기록 오류: {e}")
-            self.rollback()
+        if not self.execute(
+            "INSERT INTO quiz_result (quiz_id, user_id, word_id, is_correct) VALUES (?, ?, ?, ?)",
+            (quiz_id, user_id, word_id, 1 if is_correct else 0)
+        ):
+            self.rollback()  # 존재하지 않는 quiz/user/word (FK 위반)
             return False
+        self.execute(WRONG_COUNT_DOWN if is_correct else WRONG_COUNT_UP, (user_id, word_id))
+        self.commit()
+        return True
 
 # 모듈 레벨에서 인스턴스 생성
-quiz_db = QuizDB() 
+quiz_db = QuizDB()

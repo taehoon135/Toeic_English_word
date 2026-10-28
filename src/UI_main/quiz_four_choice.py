@@ -4,58 +4,16 @@ import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 import random
 
-def quiz_four_choice(root1, user_number, category_id_str):
+def quiz_four_choice(root1, user_number, category_id_str, count=None):
     from quiz_result import quiz_result
-    from assist_module import category_id_search, word_id_search, word_id_search_ver2
-
-    # # Add the project root to the Python path
-    # sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../')))
-    # sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../')))
-
-    import sys
-    import os
-
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  #나보다 위 디렉토리에 있음
-    from database.word_db import WordDB
-    from database.category_db import CategoryDB
-
-    # Create db
-    import pandas as pd
+    from assist_module import start_quiz, record_answer
     from quiz_generation.four_choice_quiz import FourChoiceQuizModel
 
-    # # 현재 파일의 디렉토리 경로
-    # current_dir = os.path.dirname(os.path.abspath(__file__))
-
-    # # 상대 경로를 절대 경로로 변환
-    # db_path = os.path.join(current_dir, '../../toeic_vocabulary.db')
-
-    # if not os.path.exists(db_path):
-    #     print("DB file not found")
-    #     exit()
-
-    # word_db = WordDB(db_path=db_path)
-
-    word_db = WordDB() #데베 클래스 생성
-
-    word_list = word_db.get_all_words()
-
-    if not word_list:
-        print("No words found")
-        exit()
-
-    #받은 카테고리는 str 형태이므로 카테고리 id를 찾음
-    category_db = CategoryDB()
-    
-    #선택된 카테고리가 전체인 경우 검색을 수행하지 않고 리스트의 모든 값을 사용해야 함
-    if (category_id_str == "전체"):
-        word_list_category = word_list
-    else:
-        category_id = category_id_search(user_number, category_id_str)
-
-        #카테고리에 맞게 word_list를 다시 받음
-        word_list_category = category_db.get_words_in_category(category_id)
-
-        print(word_list_category)
+    #카테고리(이름)에서 문제로 쓸 단어를 뽑고 퀴즈 세션 생성
+    quiz_id, word_list_category = start_quiz(user_number, category_id_str, "four_choice", count)
+    if not word_list_category:
+        messagebox.showwarning("경고", "퀴즈를 낼 단어가 없습니다.")
+        return
 
     #새로 생성한 리스트의 단어 개수만큼 정답지 생성
     word_list_answer = [0 for _ in range(len(word_list_category))]
@@ -71,21 +29,11 @@ def quiz_four_choice(root1, user_number, category_id_str):
         nonlocal correct_answer
         selected_word = var.get()
         
-        if selected_word == correct_answer: #맞춘 경우 answer배열 값을 1로 바꿈
-            word_list_answer[current_index] = 1
-        else:
-            word_list_answer[current_index] = 0 #틀린 경우 answer배열 값을 0으로 바꿈
-            
-            #오답인 단어의 id값을 찾아야 함 (word_id인 경우와 id인 경우를 모름)
-            if (category_id_str == "전체"):
-                word_id = word_id_search_ver2(word_list_category, correct_answer)
-            else:
-                word_id = word_id_search(word_list_category, correct_answer)
+        is_correct = selected_word == correct_answer
+        word_list_answer[current_index] = 1 if is_correct else 0  #맞추면 1, 틀리면 0
+        #결과 기록 (오답 횟수 +1 / 정답 -1)
+        record_answer(user_number, quiz_id, word_list_category[current_index]["word_id"], is_correct)
 
-            #오답의 경우 단어의 오답 횟수를 증가시킴
-            if (word_db.update_wrong_count(word_id) == False):
-                print("문제 발생")
-        
         current_index += 1 #인덱스 증가
         next_word() #문제 업데이트
 
@@ -94,6 +42,7 @@ def quiz_four_choice(root1, user_number, category_id_str):
         nonlocal correct_answer
 
         if (current_index >= len(word_list_answer)):
+            root1.unbind("<Return>")  #다른 화면에서 엔터가 퀴즈를 호출하지 않도록 해제
             messagebox.showinfo("", "모든 단어를 완료했습니다!")
             quiz_result(root1, user_number, word_list_category, word_list_answer) #기본 정보인 루트, 유저 id와 퀴즈를 수행한 단어 리스트, 정답 여부를 보냄
         else:

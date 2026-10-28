@@ -43,12 +43,13 @@ class Example_QuizDatabaseModel:
         """
         return self.quiz_db.get_random_words_for_quiz(count, category_id)
 
-    def record_quiz_result(self, user_id: int, word_id: int, is_correct: bool) -> bool:
+    def record_quiz_result(self, user_id: int, quiz_id: int, word_id: int, is_correct: bool) -> bool:
         """
         퀴즈 결과를 기록합니다.
         
         Args:
             user_id (int): 사용자 ID
+            quiz_id (int): create_quiz로 만든 퀴즈 ID
             word_id (int): 단어 ID
             is_correct (bool): 정답 여부 (True: 정답, False: 오답)
         
@@ -57,8 +58,8 @@ class Example_QuizDatabaseModel:
         
         Example:
             >>> model = Example_QuizDatabaseModel()
-            >>> success = model.record_quiz_result(user_id=1, word_id=1, is_correct=True)
+            >>> success = model.record_quiz_result(user_id=1, quiz_id=1, word_id=1, is_correct=True)
             >>> print(success)
             True
         """
-        return self.quiz_db.record_quiz_result(user_id, word_id, is_correct) 
+        return self.quiz_db.record_quiz_result(user_id, quiz_id, word_id, is_correct) 

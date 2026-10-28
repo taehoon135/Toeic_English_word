@@ -10,7 +10,6 @@ def ranking(root, user_number):
     import sys
     import os
 
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  #나보다 위 디렉토리에 있음
     from database.user_db import UserDB
     from database.game_db import GameDB
 

@@ -13,7 +13,6 @@ def category_manage(root, user_number):
     #DB연결
     import os
     import sys
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  #나보다 위 디렉토리에 있음
     from database.word_db import WordDB
     from database.category_db import CategoryDB
 

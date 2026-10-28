@@ -7,43 +7,19 @@ class AcidRainGame:
         self.user_number = user_number
         self.category_id_str = category_id_str
 
-        from assist_module import category_id_search
-
-        import sys
         import os
-
-        sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  #나보다 위 디렉토리에 있음
-        from database.word_db import WordDB
-        from database.category_db import CategoryDB
-        from database.game_db import GameDB
-
-        self.game_db = GameDB()
-
-        # Create db
-        import pandas as pd
+        from assist_module import start_quiz
+        from database.game_db import game_db
         from quiz_generation.rain_quiz import RainQuizModel
 
-        self.word_db = WordDB() #데베 클래스 생성
+        self.game_db = game_db
 
-        word_list = self.word_db.get_all_words()
-
-        if not word_list:
-            print("No words found")
-            exit()
-
-        #받은 카테고리는 str 형태이므로 카테고리 id를 찾음
-        self.category_db = CategoryDB()
-        
-        #선택된 카테고리가 전체인 경우 검색을 수행하지 않고 리스트의 모든 값을 사용해야 함
-        if (category_id_str == "전체"):
-            self.word_list_category = word_list
-        else:
-            category_id = category_id_search(user_number, category_id_str)
-
-            #카테고리에 맞게 word_list를 다시 받음
-            self.word_list_category = self.category_db.get_words_in_category(category_id)
-
-            #print(word_list_category)
+        #카테고리(이름)의 모든 단어 사용 (게임은 무작위로 반복 출제)
+        _, self.word_list_category = start_quiz(user_number, category_id_str, "rain")
+        if not self.word_list_category:
+            from tkinter import messagebox
+            messagebox.showwarning("경고", "게임에 사용할 단어가 없습니다.")
+            return
 
         # Create model -> 문제 생성기
         model = RainQuizModel(self.word_list_category)

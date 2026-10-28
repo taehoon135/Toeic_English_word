@@ -23,15 +23,15 @@ class ClozeQuizModel(BaseQuizModel):
         self.db = db
         self.words = []
         self.meanings = []
-        if db: 
-            self._parse_db(db)
+        self._parse_db(db)
     
     def _parse_db(self, db):
         for word in db:
             #word_id, english, meaning, pos, example = word
             self.words.append(word["english"])
             self.meanings.append(word["meaning"])
-        self._create_pairs()
+        if self.words:  # 단어가 없으면 LLM을 호출하지 않음
+            self._create_pairs()
 
     def _create_pairs(self):
         # Create the prompt using the current words
@@ -95,9 +95,8 @@ class ClozeQuizModel(BaseQuizModel):
     
     def __translate_examples(self, examples: List[str]) -> List[str]:
         translator = Translator()
-        result = translator.translate(examples, src="en", dest="ko")
-
-        result = asyncio.get_event_loop().run_until_complete(result) 
+        # googletrans 4.x의 translate는 코루틴. Python 3.12+에서는 get_event_loop()가 실패하므로 asyncio.run 사용
+        result = asyncio.run(translator.translate(examples, src="en", dest="ko"))
         return [i.text for i in result]
     
     def validate_api_key(APIKEY: str) -> bool:

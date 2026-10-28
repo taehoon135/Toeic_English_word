@@ -1,3 +1,8 @@
+import os
+import sys
+# src/ 를 import 경로에 추가 → 모든 화면에서 database.*, quiz_generation.*, LLM.* 사용 가능
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 import tkinter as tk
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *

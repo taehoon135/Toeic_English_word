@@ -10,7 +10,6 @@ def register(root):
     #DB연결
     import os
     import sys
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  #나보다 위 디렉토리에 있음
     from database.user_db import UserDB
 
     user_db = UserDB() #클래스 생성
@@ -123,9 +122,9 @@ def register(root):
 
         #엔터키로 입력
         id_entry.bind("<Return>", lambda event: sign_register(id_entry, password_entry, confirm_password_entry, name_entry, phone_entry))
-        password_entry.bind("<Return>", lambda event: sign_register(password_entry, password_entry, confirm_password_entry, name_entry, phone_entry))
-        confirm_password_entry.bind("<Return>", lambda event: sign_register(password_entry, password_entry, confirm_password_entry, name_entry, phone_entry))
-        name_entry.bind("<Return>", lambda event: sign_register(name_entry, password_entry, confirm_password_entry, name_entry, phone_entry))
+        password_entry.bind("<Return>", lambda event: sign_register(id_entry, password_entry, confirm_password_entry, name_entry, phone_entry))
+        confirm_password_entry.bind("<Return>", lambda event: sign_register(id_entry, password_entry, confirm_password_entry, name_entry, phone_entry))
+        name_entry.bind("<Return>", lambda event: sign_register(id_entry, password_entry, confirm_password_entry, name_entry, phone_entry))
         phone_entry.bind("<Return>", lambda event: sign_register(id_entry, password_entry, confirm_password_entry, name_entry, phone_entry))
 
         # 회원가입 버튼 (양쪽 여백 추가)

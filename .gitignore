@@ -38,3 +38,7 @@ my_prompts
 
 # Logs
 *.log 
+.venv/
+
+# Test temp DB
+test/test_database/test_temp_db_files/

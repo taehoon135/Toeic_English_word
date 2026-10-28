@@ -90,7 +90,7 @@ class Example_CategoryDatabaseModel:
         """
         return self.category_db.delete_category(category_id, user_id)
 
-    def update_category(self, category_id: int, category_name: str, user_id: int) -> bool:
+    def update_category_name(self, category_id: int, user_id: int, category_name: str) -> bool:
         """
         카테고리 이름을 수정합니다.
         
@@ -104,11 +104,11 @@ class Example_CategoryDatabaseModel:
         
         Example:
             >>> model = Example_CategoryDatabaseModel()
-            >>> success = model.update_category(category_id=1, category_name="새 이름", user_id=1)
+            >>> success = model.update_category_name(category_id=1, user_id=1, category_name="새 이름")
             >>> print(success)
             True
         """
-        return self.category_db.update_category(category_id, category_name, user_id)
+        return self.category_db.update_category_name(category_id, user_id, category_name)
 
     def add_word_to_category(self, category_id: int, word_id: int) -> bool:
         """

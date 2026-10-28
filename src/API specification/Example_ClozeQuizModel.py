@@ -14,7 +14,7 @@ from database.word_db import WordDB
 current_dir = os.path.dirname(os.path.abspath(__file__))
 
 # 상대 경로를 절대 경로로 변환
-db_path = os.path.join(current_dir, '../../toeic_vocabulary.db')
+db_path = os.path.join(current_dir, '../database/toeic_vocabulary.db')
 
 word_db = WordDB(db_path=db_path)
 

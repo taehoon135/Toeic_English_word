@@ -2,34 +2,15 @@ import tkinter as tk
 import ttkbootstrap as ttk
 from ttkbootstrap.constants import *
 from tkinter import messagebox
-import pandas as pd
-import os
-import sys
+from database.word_db import word_db
+from database.user_db import user_db
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  #나보다 위 디렉토리에 있음
-try:
-    from database.word_db import WordDB
-    from database.user_db import UserDB
-    word_db = WordDB()
-    user_db = UserDB()
-except ImportError as e:
-    print(f"데이터베이스 모듈을 찾을 수 없습니다: {e}")
-    print("database 폴더와 word_db.py, user_db.py 파일이 있는지 확인하세요.")
-    sys.exit(1)
-    
-    
-admin_info = {
-    "ID": "123",
-    "password": "123"
-}
-
-# 메뉴로 이동 함수: root 인자를 받도록 수정
-def go_to_menu(root):
-    from menu import main_menu
-    main_menu(root)
+#영어 단어 정확히 일치하는 항목 찾기 (search_words는 부분 일치라 다른 단어가 걸릴 수 있음)
+def find_exact_word(english):
+    return next((w for w in word_db.search_words(english) if w["english"].lower() == english.lower()), None)
 
 # 관리자 페이지 UI
-def admin_window(root):
+def admin_window(root, admin_id):
     # 기존 UI 제거
     for widget in root.winfo_children():
         widget.destroy()
@@ -46,15 +27,15 @@ def admin_window(root):
     btn_frame.pack(pady=10)
 
     # 단어 추가
-    add_button = ttk.Button(btn_frame, text="단어 추가", width=30, bootstyle="success", command=lambda: handle_add_word(root))
+    add_button = ttk.Button(btn_frame, text="단어 추가", width=30, bootstyle="success", command=lambda: handle_add_word(root, admin_id))
     add_button.pack(pady=10)
 
     # 단어 삭제
-    delete_button = ttk.Button(btn_frame, text="단어 삭제", width=30, bootstyle="danger", command=lambda: handle_delete_word(root))
+    delete_button = ttk.Button(btn_frame, text="단어 삭제", width=30, bootstyle="danger", command=lambda: handle_delete_word(root, admin_id))
     delete_button.pack(pady=10)
 
     # 단어 수정
-    update_button = ttk.Button(btn_frame, text="단어 수정", width=30, bootstyle="warning", command=lambda: handle_update_word(root))
+    update_button = ttk.Button(btn_frame, text="단어 수정", width=30, bootstyle="warning", command=lambda: handle_update_word(root, admin_id))
     update_button.pack(pady=10)
 
     # 관리자 정보 수정 (root 전달하도록 lambda 사용)
@@ -63,7 +44,7 @@ def admin_window(root):
         text="관리자 정보 수정",
         width=30,
         bootstyle="info",
-        command=lambda: admin_info_edit(root)
+        command=lambda: admin_info_edit(root, admin_id)
     )
     edit_info_button.pack(pady=10)
 
@@ -78,7 +59,7 @@ def admin_window(root):
     logout_button.pack(pady=10)
 
 # 관리자 정보 수정 UI
-def admin_info_edit(root):
+def admin_info_edit(root, admin_id):
     # 기존 UI 제거
     for widget in root.winfo_children():
         widget.destroy()
@@ -88,7 +69,7 @@ def admin_info_edit(root):
     label = ttk.Label(root, text="관리자 정보 수정", font=("Arial", 18, "bold"), bootstyle="primary")
     label.pack(pady=20)
 
-    ID_var = tk.StringVar(value=admin_info["ID"])
+    ID_var = tk.StringVar(value=user_db.get_user_by_id(admin_id)["user_login_id"])
     password_var = tk.StringVar()
     #api_var = tk.StringVar()
 
@@ -103,20 +84,23 @@ def admin_info_edit(root):
 
 
     def admin_save_changes():
-        admin_info["ID"] = ID_var.get()
-        if password_var.get():
-            admin_info["password"] = password_var.get()
-        #if api_var.get():
-        #    admin_info["api_key"] = api_var.get()
-        admin_window(root)
+        new_id = ID_var.get().strip()
+        if not new_id:
+            messagebox.showwarning("입력 오류", "아이디를 입력해주세요.")
+            return
+        if not user_db.update_login(admin_id, new_id, password_var.get() or None):
+            messagebox.showerror("실패", "이미 사용 중인 아이디입니다.")
+            return
+        messagebox.showinfo("성공", "관리자 정보가 수정되었습니다.")
+        admin_window(root, admin_id)
 
     save_button = ttk.Button(root, text="저장", bootstyle="success", command=admin_save_changes)
     save_button.pack(pady=10)
 
-    cancel_button = ttk.Button(root, text="취소", bootstyle="danger", command=lambda: admin_window(root))
+    cancel_button = ttk.Button(root, text="취소", bootstyle="danger", command=lambda: admin_window(root, admin_id))
     cancel_button.pack(pady=5)
 
-def add_word_ui(root):
+def add_word_ui(root, admin_id):
     for widget in root.winfo_children():
         widget.destroy()
     
@@ -147,15 +131,15 @@ def add_word_ui(root):
         word_id = word_db.add_word(english, meaning, pos, example)
         if word_id:
             messagebox.showinfo("성공", f"단어가 추가되었습니다 (ID: {word_id})")
-            admin_window(root)
+            admin_window(root, admin_id)
         else:
             messagebox.showerror("실패", "단어 추가에 실패했습니다.")
 
     ttk.Button(root, text="추가", bootstyle="success", command=handle_add).pack(pady=10)
-    back_button = ttk.Button(top_bar, text="← 뒤로가기", command=lambda: admin_window(root), style="Big.TButton")
+    back_button = ttk.Button(top_bar, text="← 뒤로가기", command=lambda: admin_window(root, admin_id), style="Big.TButton")
     back_button.pack(side=tk.RIGHT)
     
-def delete_word_ui(root):
+def delete_word_ui(root, admin_id):
     for widget in root.winfo_children():
         widget.destroy()
 
@@ -174,25 +158,27 @@ def delete_word_ui(root):
             messagebox.showwarning("입력 오류", "단어를 입력해주세요.")
             return
 
-        found = word_db.search_words(word)
+        found = find_exact_word(word)
         if not found:
             messagebox.showerror("오류", "해당 단어를 찾을 수 없습니다.")
             return
 
-        word_id = found[0]["word_id"]
+        if not messagebox.askyesno("단어 삭제", f"'{found['english']}' 단어를 삭제하시겠습니까?"):
+            return
+        word_id = found["word_id"]
         success = word_db.delete_word(word_id)
         if success:
             messagebox.showinfo("성공", f"단어(ID {word_id})가 삭제되었습니다.")
-            admin_window(root)
+            admin_window(root, admin_id)
         else:
             messagebox.showerror("실패", "단어 삭제에 실패했습니다.")
 
     ttk.Button(root, text="삭제", bootstyle="danger", command=handle_delete).pack(pady=10)
-    back_button = ttk.Button(top_bar, text="← 뒤로가기", command=lambda: admin_window(root), style="Big.TButton")
+    back_button = ttk.Button(top_bar, text="← 뒤로가기", command=lambda: admin_window(root, admin_id), style="Big.TButton")
     back_button.pack(side=tk.RIGHT)
     
 # 단어 수정 UI
-def update_word_ui(root):
+def update_word_ui(root, admin_id):
     for widget in root.winfo_children():
         widget.destroy()
 
@@ -212,12 +198,11 @@ def update_word_ui(root):
             messagebox.showwarning("입력 오류", "단어를 입력해주세요.")
             return
 
-        results = word_db.search_words(word)
-        if not results:
+        word_info = find_exact_word(word)
+        if not word_info:
             messagebox.showerror("오류", "해당 단어를 찾을 수 없습니다.")
             return
 
-        word_info = results[0]
         show_update_form(word_info)
 
     def show_update_form(word_info):
@@ -230,8 +215,8 @@ def update_word_ui(root):
         fields = {
             "영어 단어": word_info["english"],
             "뜻": word_info["meaning"],
-            "품사": word_info.get("part_of_speech", ""),
-            "예문": word_info.get("example_sentence", "")
+            "품사": word_info.get("part_of_speech") or "",
+            "예문": word_info.get("example_sentence") or ""
         }
 
         for label, value in fields.items():
@@ -254,24 +239,24 @@ def update_word_ui(root):
             success = word_db.update_word(word_info["word_id"], new_word, meaning, pos, example)
             if success:
                 messagebox.showinfo("성공", "단어가 수정되었습니다.")
-                admin_window(root)
+                admin_window(root, admin_id)
             else:
                 messagebox.showerror("실패", "단어 수정에 실패했습니다.")
 
         ttk.Button(root, text="수정", bootstyle="warning", command=handle_update).pack(pady=10)
-        ttk.Button(root, text="뒤로가기", bootstyle="secondary outline", command=lambda: admin_window(root)).pack(pady=5)
+        ttk.Button(root, text="뒤로가기", bootstyle="secondary outline", command=lambda: admin_window(root, admin_id)).pack(pady=5)
 
     ttk.Button(root, text="불러오기", bootstyle="info", command=load_word).pack(pady=10)
-    back_button = ttk.Button(top_bar, text="← 뒤로가기", command=lambda: admin_window(root), style="Big.TButton")
+    back_button = ttk.Button(top_bar, text="← 뒤로가기", command=lambda: admin_window(root, admin_id), style="Big.TButton")
     back_button.pack(side=tk.RIGHT)
 
 
 
-def handle_add_word(root):
-    add_word_ui(root)
+def handle_add_word(root, admin_id):
+    add_word_ui(root, admin_id)
 
-def handle_delete_word(root):
-    delete_word_ui(root)
+def handle_delete_word(root, admin_id):
+    delete_word_ui(root, admin_id)
 
-def handle_update_word(root):
-    update_word_ui(root)
+def handle_update_word(root, admin_id):
+    update_word_ui(root, admin_id)

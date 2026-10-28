@@ -3,3 +3,5 @@ jamo
 googletrans
 ttkbootstrap
 pyttsx3
+pillow
+pytest

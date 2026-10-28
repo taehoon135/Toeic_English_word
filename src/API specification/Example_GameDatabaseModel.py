@@ -41,7 +41,8 @@ class Example_GameDatabaseModel:
                 ...
             ]
         """
-        return self.game_db.get_random_words(count, category_id)
+        from database.quiz_db import quiz_db  # 게임 단어도 퀴즈와 같은 가중 샘플링 사용
+        return quiz_db.get_random_words_for_quiz(count, category_id)
 
     def record_game_result(self, user_id: int, score: int, game_type: str = 'rain') -> bool:
         """

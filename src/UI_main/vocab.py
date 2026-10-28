@@ -21,11 +21,10 @@ def vocab_window(root, user_number):
     #DB연결
     import os
     import sys
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  #나보다 위 디렉토리에 있음
     from database.word_db import WordDB
 
     word_db = WordDB() #데베 클래스 생성
-    words = word_db.get_all_words()
+    words = word_db.get_all_words(user_number)  #사용자별 오답 횟수 포함
 
     # 카테고리 연결
     from database.category_db import CategoryDB
@@ -106,6 +105,7 @@ def vocab_window(root, user_number):
             data = word_table.item(selected, "values")
 
             #단어 이름으로 단어 튜플을 통째로 찾음
+            word = None
             for w in filtered_words:
                 if w["english"] == data[1]:
                     word = w
@@ -160,7 +160,8 @@ def vocab_window(root, user_number):
     category_only_name = []
     # category_only_name = ["임시"] #카테고리 이름만을 포함하는 리스트 생성
     for category in category_list:
-        category_only_name.append(category["name"])
+        if category["name"] != "전체":  #"전체"는 필터 예약어
+            category_only_name.append(category["name"])
     # #전체를 맨 앞으로 보냄
     # if "전체" in category_only_name:
     #     category_only_name.remove("전체")

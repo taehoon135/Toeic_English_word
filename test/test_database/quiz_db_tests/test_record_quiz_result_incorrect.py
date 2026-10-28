@@ -43,8 +43,7 @@ def test_record_quiz_result_incorrect(quiz_db_instance, word_db_for_quiz, setup_
     # Arrange
     user_id, word_id, _, _ = setup_quiz_data
     quiz_id = quiz_db_instance.create_quiz("type_incorrect", user_id) # 고유한 퀴즈 타입
-    initial_word_state = word_db_for_quiz.fetch_one("SELECT wrong_count FROM Word WHERE word_id = ?", (word_id,))
-    initial_wrong_count = initial_word_state['wrong_count']
+    initial_wrong_count = word_db_for_quiz.get_wrong_count(word_id, user_id)
 
     # Act
     success = quiz_db_instance.record_quiz_result(user_id, quiz_id, word_id, is_correct=False)
@@ -58,5 +57,4 @@ def test_record_quiz_result_incorrect(quiz_db_instance, word_db_for_quiz, setup_
     assert result_entry is not None
     assert result_entry['is_correct'] == 0 # False는 0으로 저장
     
-    final_word_state = word_db_for_quiz.fetch_one("SELECT wrong_count FROM Word WHERE word_id = ?", (word_id,))
-    assert final_word_state['wrong_count'] == initial_wrong_count + 1 
+    assert word_db_for_quiz.get_wrong_count(word_id, user_id) == initial_wrong_count + 1 

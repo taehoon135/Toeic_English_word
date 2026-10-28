@@ -5,20 +5,6 @@ class GameDB(BaseDatabase):
     # GameDB 인스턴스 초기화
     def __init__(self, db_path: str = DB_PATH):
         super().__init__(db_path)
-        self.initialize_tables()
-
-    def initialize_tables(self):
-        # Rain Game 점수 테이블 생성
-        self.execute("""
-        CREATE TABLE IF NOT EXISTS Rain_Game_Score (
-            score_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            score INTEGER,
-            played_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (user_id) REFERENCES User(user_id)
-        )
-        """)
-        self.commit()
 
     def save_rain_game_score(self, user_id: int, score: int) -> bool:
         """

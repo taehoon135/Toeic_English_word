@@ -93,14 +93,15 @@ class Example_WordDatabaseModel:
         """
         return self.word_db.delete_word(word_id)
 
-    def update_wrong_count(self, word_id: int) -> bool:
+    def update_wrong_count(self, word_id: int, user_id: int) -> bool:
         """
-        단어의 틀린 횟수를 1 증가시킵니다.
+        해당 사용자의 단어 틀린 횟수를 1 증가시킵니다. (틀린 횟수는 사용자별, UserWord 테이블)
         
         Args:
             word_id (int): 수정할 단어 ID
+            user_id (int): 사용자 ID
         
         Returns:
             bool: 수정 성공 여부
         """
-        return self.word_db.update_wrong_count(word_id) 
+        return self.word_db.update_wrong_count(word_id, user_id) 

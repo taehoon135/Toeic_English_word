@@ -11,7 +11,6 @@ def sign_login(root):
     #DB연결
     import os
     import sys
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  #나보다 위 디렉토리에 있음
     from database.user_db import UserDB
 
     user_db = UserDB() #클래스 생성
@@ -67,9 +66,10 @@ def sign_login(root):
                 messagebox.showerror("오류", "ID 또는 비밀번호가 잘못되었습니다.")
 
         elif selected_mode == "관리자 모드":
-        # admin.py에 정의된 admin_info를 사용하여 인증
-            if ad.admin_info.get("ID") == id.get() and ad.admin_info.get("password") == password.get():
-                ad.admin_window(root)
+        # User 테이블의 is_admin 계정으로 인증 (기본 계정 123/123, 관리자 정보 수정에서 변경)
+            admin = user_db.login_user(id.get(), password.get())
+            if admin and admin["is_admin"]:
+                ad.admin_window(root, admin["user_id"])
             else:
                 messagebox.showerror("오류", "관리자 ID 또는 비밀번호가 잘못되었습니다.")
         else:

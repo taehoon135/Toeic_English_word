@@ -9,7 +9,6 @@ def category_make(root, user_number):
     #DB연결
     import os
     import sys
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))  #나보다 위 디렉토리에 있음
     from database.category_db import CategoryDB
 
     category_db = CategoryDB()
@@ -55,7 +54,7 @@ def category_make(root, user_number):
             messagebox.showinfo("성공", "카테고리 생성 완료.")
             back_to_category()
         else:
-            messagebox.showwarning("실패", "중복된 카테고리 이름입니다.")
+            messagebox.showwarning("실패", "이미 있거나 사용할 수 없는 이름입니다. ('전체'는 사용 불가)")
 
     root.geometry("320x250")
     root.title("카테고리")

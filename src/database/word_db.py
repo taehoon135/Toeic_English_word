@@ -2,21 +2,19 @@ from typing import Dict, List, Optional, Tuple
 from .base_db import BaseDatabase, DB_PATH
 import csv
 import os
-# import sqlite3 # sqlite3 모듈이 직접 사용되지 않으면 삭제 가능
-# from .category_db import CategoryDB # CategoryDB 임포트 (순환참조 주의하며 실제 경로로)
-# 위 임포트가 순환 참조를 일으키면, category_db: 'CategoryDB' 타입 힌트 사용
 
-# word_db.py 상단에 추가 (실제 CategoryDB 위치에 따라 경로 조정 필요)
-# from ..category_db import CategoryDB # 만약 category_db가 database 폴더 밖에 있다면
-# 여기서는 같은 폴더라 가정하고 from .category_db import CategoryDB
-
-# 클래스 정의 전에 임포트하는 것이 일반적
-# 이 예제에서는 CategoryDB가 같은 디렉토리에 있다고 가정합니다.
-# 실제 프로젝트 구조에 따라 from src.database.category_db import CategoryDB 등이 될 수 있습니다.
-# 순환 참조를 피하기 위해, 함수 시그니처에서 'CategoryDB' 문자열 힌트를 사용하는 것이 더 안전할 수 있습니다.
-# 여기서는 직접 임포트를 시도합니다.
-
-# from .category_db import CategoryDB # CategoryDB 임포트 (순환참조 주의하며 실제 경로로)
+# 사용자별 틀린 횟수 SQL (word_db / quiz_db / category_db 공용)
+# 단어 + 해당 사용자의 wrong_count. 파라미터: (user_id,) — user_id가 None이면 wrong_count는 0
+WORD_WITH_WRONG_COUNT = """
+    SELECT w.*, COALESCE(uw.wrong_count, 0) AS wrong_count
+    FROM Word w
+    LEFT JOIN UserWord uw ON uw.word_id = w.word_id AND uw.user_id = ?
+"""
+WRONG_COUNT_UP = """
+    INSERT INTO UserWord (user_id, word_id, wrong_count) VALUES (?, ?, 1)
+    ON CONFLICT(user_id, word_id) DO UPDATE SET wrong_count = wrong_count + 1
+"""
+WRONG_COUNT_DOWN = "UPDATE UserWord SET wrong_count = MAX(wrong_count - 1, 0) WHERE user_id = ? AND word_id = ?"
 
 class WordDB(BaseDatabase):
     """
@@ -30,26 +28,10 @@ class WordDB(BaseDatabase):
         self.initialize_tables()  # DB 테이블 초기화
 
     def initialize_tables(self):
-        """
-        Word 테이블 생성 및 초기화
-        - 테이블이 없으면 새로 생성
-        - 테이블이 비어있으면 CSV 파일에서 단어 가져오기
-        """
-        self.execute("PRAGMA foreign_keys = OFF")  # 외래키 제약 조건 일시 해제
-        self.execute("""
-        CREATE TABLE IF NOT EXISTS Word (
-            word_id INTEGER PRIMARY KEY AUTOINCREMENT,  -- 단어 고유 ID
-            english TEXT UNIQUE NOT NULL,              -- 영어 단어 (중복 불가)
-            meaning TEXT NOT NULL,                     -- 한글 의미
-            part_of_speech TEXT,                       -- 품사
-            example_sentence TEXT,                     -- 예문
-            wrong_count INTEGER DEFAULT 0              -- 오답 횟수
-        )
-        """)
-        self.execute("PRAGMA foreign_keys = ON")      # 외래키 제약 조건 다시 활성화
-        self.commit()
-
-        # Word 테이블이 비어있는지 확인
+        """실제 앱 DB가 비어 있으면 toeic_words.csv로 단어를 채웁니다. (테이블 생성은 BaseDatabase)"""
+        # 실제 앱 DB가 비어있을 때만 CSV로 초기 단어를 채움 (테스트용 임시 DB는 비워둠)
+        if self.db_path != DB_PATH:
+            return
         word_count = self.fetch_one("SELECT COUNT(*) as count FROM Word")
         if word_count and word_count['count'] == 0:
             # CSV 파일 경로 설정
@@ -76,17 +58,16 @@ class WordDB(BaseDatabase):
             # 중복 단어 체크
             existing = self.fetch_one("SELECT word_id FROM Word WHERE english = ?", (english,))
             if existing:
-                print(f"이미 등록된 단어: {english}")
                 return existing['word_id']  # 기존 단어의 ID 반환
             
             # 새 단어 추가
-            print(f"[DEBUG] add_word: {english}, {meaning}, {part_of_speech}, {example_sentence}")
-            self.execute(
+            if not self.execute(
                 "INSERT INTO Word (english, meaning, part_of_speech, example_sentence) VALUES (?, ?, ?, ?)",
                 (english, meaning, part_of_speech, example_sentence)
-            )
+            ):  # CHECK 위반 (빈 단어/뜻)
+                self.rollback()
+                return None
             self.commit()
-            print(f"[DEBUG] add_word 성공: {english}")
             return self.cursor.lastrowid  # 새로 추가된 단어의 ID 반환
         except Exception as e:
             print(f"단어 추가 오류: {e}")
@@ -120,7 +101,6 @@ class WordDB(BaseDatabase):
                     part_of_speech = row.get('part_of_speech', '').strip()
                     example_sentence = row.get('example_sentence', '').strip()
 
-                    print(f"[DEBUG] import_from_csv: {english}, {meaning}, {part_of_speech}, {example_sentence}")
                     # 단어 추가
                     word_id = self.add_word(english, meaning, part_of_speech, example_sentence)
                     
@@ -138,13 +118,13 @@ class WordDB(BaseDatabase):
             print(f"Error during CSV import: {e}")
             return False
 
-    def get_all_words(self) -> List[Dict]:
+    def get_all_words(self, user_id: Optional[int] = None) -> List[Dict]:
         """
         모든 단어 목록을 조회합니다.
         Returns:
-            List[Dict]: 단어 목록 (각 단어는 모든 컬럼 포함)
+            List[Dict]: 단어 목록 (모든 컬럼 + 해당 사용자의 wrong_count)
         """
-        return self.fetch_all("SELECT * FROM Word")
+        return self.fetch_all(WORD_WITH_WRONG_COUNT + " ORDER BY w.word_id", (user_id,))
 
     def search_words(self, keyword: str) -> List[Dict]:
         """
@@ -209,29 +189,18 @@ class WordDB(BaseDatabase):
             print(f"단어 삭제 오류: {e}")
             return False
 
-    def update_wrong_count(self, word_id: int) -> bool:
-        """
-        단어의 틀린 횟수를 1 증가시킵니다.
-        Args:
-            word_id: 수정할 단어 ID
-        Returns:
-            bool: 성공 여부
-        """
-        try:
-            self.execute(
-                """
-                UPDATE Word
-                SET wrong_count = wrong_count + 1
-                WHERE word_id = ?
-                """,
-                (word_id,)
-            )
-            self.commit()
-            return True
-        except Exception as e:
-            print(f"틀린 횟수 업데이트 오류: {e}")
+    def update_wrong_count(self, word_id: int, user_id: int) -> bool:
+        """해당 사용자의 단어 틀린 횟수를 1 증가시킵니다."""
+        if not self.execute(WRONG_COUNT_UP, (user_id, word_id)):
             self.rollback()
             return False
+        self.commit()
+        return True
+
+    def get_wrong_count(self, word_id: int, user_id: int) -> int:
+        """해당 사용자의 단어 틀린 횟수 (기록이 없으면 0)."""
+        row = self.fetch_one("SELECT wrong_count FROM UserWord WHERE user_id = ? AND word_id = ?", (user_id, word_id))
+        return row['wrong_count'] if row else 0
 
 # 모듈 레벨에서 인스턴스 생성 - 메인 프로그램에서 사용되는 전역 인스턴스
 word_db = WordDB() 

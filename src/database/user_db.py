@@ -12,24 +12,28 @@ class UserDB(BaseDatabase):
         self.initialize_tables()
 
     def initialize_tables(self):
-        """
-        User 테이블 생성 및 초기화
-        - 테이블이 없으면 새로 생성
-        """
-        self.execute("PRAGMA foreign_keys = OFF")
-        self.execute("""
-        CREATE TABLE IF NOT EXISTS User (
-            user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_login_id TEXT UNIQUE NOT NULL,
-            user_pw TEXT NOT NULL,
-            user_name TEXT NOT NULL,
-            user_phone TEXT,
-            is_admin BOOLEAN DEFAULT 0,
-            user_api TEXT
-        )
-        """)
-        self.execute("PRAGMA foreign_keys = ON")
+        """실제 앱 DB에 기본 관리자 계정(123/123)을 하나 보장 (회의록 2차: 고유 admin 계정, 이후 변경 가능)"""
+        if self.db_path == DB_PATH:
+            self.execute("""
+            INSERT INTO User (user_login_id, user_pw, user_name, is_admin)
+            SELECT '123', '123', '관리자', 1
+            WHERE NOT EXISTS (SELECT 1 FROM User WHERE is_admin = 1)
+            """)
+            self.commit()
+
+    def update_login(self, user_id: int, user_login_id: str, user_pw: str = None) -> bool:
+        """로그인 ID(와 선택적으로 비밀번호)를 변경합니다. ID 중복 시 False."""
+        if user_pw:
+            ok = self.execute("UPDATE User SET user_login_id = ?, user_pw = ? WHERE user_id = ?",
+                              (user_login_id, user_pw, user_id))
+        else:
+            ok = self.execute("UPDATE User SET user_login_id = ? WHERE user_id = ?",
+                              (user_login_id, user_id))
+        if not ok:
+            self.rollback()
+            return False
         self.commit()
+        return self.cursor.rowcount > 0
 
     def register_user(self, user_login_id: str, user_pw: str, user_name: str, 
                      user_phone: str = None, is_admin: bool = False, user_api: str = None) -> int:

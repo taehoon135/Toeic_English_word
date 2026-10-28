@@ -41,4 +41,6 @@ def test_create_duplicate_category_for_same_user(category_db_instance, setup_use
     category_id2 = category_db_instance.create_category(user_id, category_name)
     
     # Assert
-    assert category_id1 == category_id2, "중복 카테고리 생성 시 기존 ID를 반환해야 합니다." 
+    # create_category는 중복 시 None (UI가 이 값으로 '중복된 카테고리 이름' 경고를 띄움)
+    assert category_id1 is not None
+    assert category_id2 is None, "중복 카테고리 생성은 실패(None)해야 합니다." 
